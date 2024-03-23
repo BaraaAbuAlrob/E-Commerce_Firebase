@@ -2,19 +2,26 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ECommerce" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+         <item name="colorPrimary">@color/primaryColor</item>
+         <item name="colorAccent">@color/primaryColor</item>
+         <item name="colorPrimaryDark">@color/primaryColor</item>
+
+        <!-- System UI Configurations -->
+        <item name="android:statusBarColor"> @color/white </item>
+        <item name="android:windowLightStatusBar"> true </item>
+        <item name="android:navigationBarColor"> @color/white </item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1"> true </item>
     </style>
 
     <style name="Theme.ECommerce" parent="Base.Theme.ECommerce" />
 
     <style name="MainActivityTheme" parent="Theme.ECommerce" >
-        <item name="android:statusBarColor"> @color/white </item>
-        <item name="android:windowLightStatusBar"> true </item>
-        <item name="android:navigationBarColor"> @color/white </item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1"> true </item>
-        <item name="android:windowNoTitle"> true </item>
-        <item name="android:colorPrimary"> @color/primaryColor </item>
-        <item name="android:colorPrimaryDark"> @color/primaryColor </item>
         <item name="android:windowBackground"> @drawable/launch_background </item>
+
+        <!-- System UI Configurations -->
+        <item name="android:statusBarColor"> @color/primaryColor </item>
+        <item name="android:windowLightStatusBar"> false </item>
+        <item name="android:navigationBarColor"> @color/primaryColor </item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1"> false </item>
     </style>
 </resources>

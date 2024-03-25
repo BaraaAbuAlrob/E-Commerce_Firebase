@@ -19,8 +19,6 @@
 
     <style name="Theme.MainActivity" parent="Theme.ECommerce" >
         <item name="android:windowBackground"> @drawable/launch_background </item>
-    <style name="Theme.MainActivity" parent="Base.Theme.ECommerce">
-        <item name="android:windowBackground">@drawable/launch_background</item>
 
         <!-- System UI Configurations-->
         <item name="android:statusBarColor">@color/primary_color</item>

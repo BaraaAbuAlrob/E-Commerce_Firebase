@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.baraa.training.ecommerce" />
+                  <option name="mobileSdkAppId" value="1:364834184261:android:19f4959da312d86d8c972c" />
+                  <option name="projectId" value="e-commerce-f6265" />
+                  <option name="projectNumber" value="364834184261" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

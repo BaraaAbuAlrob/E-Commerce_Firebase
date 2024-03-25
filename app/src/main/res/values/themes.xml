@@ -2,26 +2,30 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ECommerce" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/primaryColor</item>
-         <item name="colorAccent">@color/primaryColor</item>
-         <item name="colorPrimaryDark">@color/primaryColor</item>
+         <item name="colorPrimary">@color/primary_color</item>
+         <item name="android:colorAccent">@color/primary_color</item>
+         <item name="android:colorPrimaryDark">@color/primary_color</item>
 
-        <!-- System UI Configurations -->
-        <item name="android:statusBarColor"> @color/white </item>
-        <item name="android:windowLightStatusBar"> true </item>
-        <item name="android:navigationBarColor"> @color/white </item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1"> true </item>
+        <!-- System UI Configurations-->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item> <!-- For making status bar content color dark -->
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>  <!-- For making Navigation bar content color dark -->
+
     </style>
 
     <style name="Theme.ECommerce" parent="Base.Theme.ECommerce" />
 
+
     <style name="Theme.MainActivity" parent="Theme.ECommerce" >
         <item name="android:windowBackground"> @drawable/launch_background </item>
+    <style name="Theme.MainActivity" parent="Base.Theme.ECommerce">
+        <item name="android:windowBackground">@drawable/launch_background</item>
 
-        <!-- System UI Configurations -->
-        <item name="android:statusBarColor"> @color/primaryColor </item>
-        <item name="android:windowLightStatusBar"> false </item>
-        <item name="android:navigationBarColor"> @color/primaryColor </item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1"> false </item>
+        <!-- System UI Configurations-->
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:windowLightStatusBar">false</item> <!-- For making status bar content color dark -->
+        <item name="android:navigationBarColor">@color/primary_color</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>  <!-- For making Navigation bar content color dark -->
     </style>
 </resources>

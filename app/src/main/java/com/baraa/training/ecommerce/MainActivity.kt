@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.core.animation.doOnEnd
@@ -38,5 +39,9 @@ class MainActivity : AppCompatActivity() {
         } else {
             setTheme(R.style.Theme_ECommerce)
         }
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        throw RuntimeException("Test Crush")
     }
 }

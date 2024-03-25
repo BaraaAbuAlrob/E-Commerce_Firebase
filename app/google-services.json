@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "364834184261",
+    "project_id": "e-commerce-f6265",
+    "storage_bucket": "e-commerce-f6265.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364834184261:android:19f4959da312d86d8c972c",
+        "android_client_info": {
+          "package_name": "com.baraa.training.ecommerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "364834184261-5lraupkk2eatm6ogrfaefkr1hkm4ennn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baraa.training.ecommerce",
+            "certificate_hash": "e7142808b8b97533fcf21bc7897350b411762396"
+          }
+        },
+        {
+          "client_id": "364834184261-u5j7hkvu3kc54j32fen5gbdclcrdq8ep.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFVq8a-Hc3FIHAQr3e3v7MH52mRIqq6s4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

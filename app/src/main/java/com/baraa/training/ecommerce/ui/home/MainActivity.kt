@@ -1,4 +1,4 @@
-package com.baraa.training.ecommerce
+package com.baraa.training.ecommerce.ui.home
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.baraa.training.ecommerce.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

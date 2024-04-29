@@ -9,7 +9,7 @@
         android:drawable="@drawable/ic_launcher"
         android:gravity="center" />
 
-<!--The Brand (The name of app owner), like facebook write from meta...-->
+<!--The Brand (name of app owner), like facebook write from meta...-->
     <item
         android:height="80dp"
         android:width="200dp"

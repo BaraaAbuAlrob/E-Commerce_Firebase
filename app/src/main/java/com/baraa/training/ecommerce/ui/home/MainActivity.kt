@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
                 val slideUp = ObjectAnimator.ofFloat(
                     splashScreenView, View.TRANSLATION_Y, 0f, -splashScreenView.height.toFloat())
                 slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 1000L
+                slideUp.duration = 1500L
 
                 // Call SplashScreenView.remove at the end of your custom animation.
                 slideUp.doOnEnd { splashScreenView.remove() }

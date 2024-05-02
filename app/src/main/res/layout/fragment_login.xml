@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -27,7 +28,7 @@
             <ImageView
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="65dp"
                 android:contentDescription="@string/app_icon"
                 android:src="@drawable/logo_blue" />
 
@@ -43,44 +44,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/sign_in_msg" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/email_et"
-                style="@style/EditTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="36dp"
-                android:drawableStart="@drawable/ic_email"
-                android:hint="@string/email_et_hint"
-                android:inputType="textEmailAddress" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_layout_ed_text"
+                style="@style/LayoutEditTextStyle"
+                app:endIconMode="clear_text" >
 
-<!--            android:text="@={viewmodel.ic_email}"-->
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/EditTextStyle"
+                    android:drawableStart="@drawable/ic_email"
+                    android:hint="@string/email_et_hint"
+                    android:inputType="textEmailAddress" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/password_et"
+                <!--            android:text="@={viewmodel.ic_email}"-->
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_layout_ed_text"
+                style="@style/LayoutEditTextStyle"
+                app:endIconMode="password_toggle" >
+
+            <com.google.android.material.textfield.TextInputEditText
                 style="@style/EditTextStyle"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
                 android:drawableStart="@drawable/ic_password"
                 android:hint="@string/password_et_hint"
                 android:inputType="textPassword" />
-<!--            android:text="@={viewmodel.ic_password}"-->
+            <!--            android:text="@={viewmodel.ic_password}"-->
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_btn"
                 style="@style/PrimaryButtonStyle"
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_in" />
-<!--            android:onClickListener="@{() -> viewmodel.loginWithEmailAndPassword()}"-->
-
+            <!--            android:onClickListener="@{() -> viewmodel.loginWithEmailAndPassword()}"-->
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginTop="8dp" >
 
                 <View
                     android:layout_width="match_parent"
@@ -89,6 +93,7 @@
                     android:background="@color/neutral_light" />
 
                 <TextView
+                    style="@style/EditTextStyle"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -97,33 +102,37 @@
                     android:gravity="center"
                     android:text="@string/or"
                     android:textAllCaps="true"
-                    android:textColor="@color/neutral_gray" />
+                    android:textColor="@color/neutral_grey"
+                    android:textSize="14sp"
+                    tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
             </RelativeLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/google_signin_btn"
                 style="@style/SocialButtonStyle"
-                android:drawableStart="@drawable/ic_google"
-                android:text="@string/google_signin_btn_msg" />
+                android:drawableLeft="@drawable/ic_google"
+                android:text="@string/google_signin_btn_msg"
+                tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/facebook_signin_btn"
                 style="@style/SocialButtonStyle"
-                android:layout_marginTop="8dp"
-                android:drawableStart="@drawable/ic_facebook"
-                android:text="@string/facebook_signin_btn_msg" />
+                android:drawableLeft="@drawable/ic_facebook"
+                android:text="@string/facebook_signin_btn_msg"
+                tools:ignore="RtlHardcoded" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/forgot_password_tv"
                 style="@style/MediumPrimaryTextViewStyle"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:textAllCaps="false"
                 android:text="@string/forgot_password_msg" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="-20dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -131,14 +140,16 @@
                     style="@style/MessageTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dont_have_a_account_msg" />
+                    android:text="@string/dont_have_a_account_msg"
+                    android:textSize="14sp" />
 
-                <TextView
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/register_tv"
                     style="@style/MediumPrimaryTextViewStyle"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:text="@string/register" />
+                    android:layout_gravity="start"
+                    android:textAllCaps="false"
+                    android:text="@string/register"
+                    android:layout_marginStart="-8dp" />
             </LinearLayout>
 
         </LinearLayout>

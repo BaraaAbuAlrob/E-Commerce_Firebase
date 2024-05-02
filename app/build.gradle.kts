@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.ic_google.gms.ic_google-services")
-    id("com.ic_google.firebase.crashlytics")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     id("kotlin-kapt")
 }
 
@@ -45,9 +45,9 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.ic_google.android.material:material:1.11.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
 
@@ -55,9 +55,9 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Firebase dependencies
-    implementation(platform("com.ic_google.firebase:firebase-bom:32.8.0"))
-    implementation("com.ic_google.firebase:firebase-analytics")
-    implementation("com.ic_google.firebase:firebase-crashlytics")
+    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     // third party libraries
     implementation("com.github.pwittchen:reactivenetwork-rx2:3.0.8")
@@ -67,6 +67,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+
+    // Material Design
+    api ("com.google.android.material:material:1.11.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

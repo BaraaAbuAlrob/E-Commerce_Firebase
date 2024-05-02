@@ -8,6 +8,7 @@
     tools:context=".ui.home.MainActivity">
 
     <TextView
+        android:id="@+id/e_commerce"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello E-Commerce"

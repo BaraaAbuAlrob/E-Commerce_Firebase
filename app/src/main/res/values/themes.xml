@@ -43,8 +43,6 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/neutral_grey</item>
-        <item name="android:textColorHint">@color/neutral_grey</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingEnd">16dp</item>
@@ -97,7 +95,7 @@
         <item name="android:textColor">@color/primary_color</item>
         <item name="android:textSize">12sp</item>
         <item name="android:background">@null</item>
-        <item name="android:gravity">start</item>
+        <item name="android:gravity">top</item>
         <item name="android:clickable">true</item>
     </style>
 </resources>

@@ -53,6 +53,7 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_filed_ed_text"
                     style="@style/EditTextStyle"
                     android:drawableStart="@drawable/ic_email"
                     android:hint="@string/email_et_hint"
@@ -67,6 +68,7 @@
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_filed_ed_text"
                     style="@style/EditTextStyle"
                     android:drawableStart="@drawable/ic_password"
                     android:hint="@string/password_et_hint"
@@ -124,16 +126,19 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/forgot_password_tv"
                 style="@style/MediumPrimaryTextViewStyle"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/forgot_password_msg"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-20dp"
-                android:gravity="center"
+                android:layout_height="31dp"
+                android:layout_marginTop="-8dp"
+                android:gravity="top"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -146,10 +151,12 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/register_tv"
                     style="@style/MediumPrimaryTextViewStyle"
-                    android:layout_gravity="start"
-                    android:layout_marginStart="-8dp"
+                    android:layout_width="63dp"
+                    android:padding="0dp"
+                    android:paddingStart="5dp"
                     android:text="@string/register"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    tools:ignore="RtlSymmetry,TouchTargetSizeCheck" />
             </LinearLayout>
 
         </LinearLayout>

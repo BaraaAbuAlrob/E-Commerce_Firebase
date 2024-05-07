@@ -57,9 +57,9 @@
                     style="@style/EditTextStyle"
                     android:drawableStart="@drawable/ic_email"
                     android:hint="@string/email_et_hint"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:text="@={viewmodel.email}" />
 
-                <!--            android:text="@={viewmodel.ic_email}"-->
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,8 +72,10 @@
                     style="@style/EditTextStyle"
                     android:drawableStart="@drawable/ic_password"
                     android:hint="@string/password_et_hint"
-                    android:inputType="textPassword" />
-                <!--            android:text="@={viewmodel.ic_password}"-->
+                    android:inputType="textPassword"
+                    android:text="@={viewmodel.password}"
+                    tools:ignore="PrivateResource" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -81,7 +83,6 @@
                 style="@style/PrimaryButtonStyle"
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_in" />
-            <!--            android:onClickListener="@{() -> viewmodel.loginWithEmailAndPassword()}"-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -13,6 +13,8 @@ object CrashlyticsUtils {
      * random cases key
      */
     const val CUSTOM_KEY = "CUSTOM_KEY"
+    const val LOGIN_KEY = "LOGIN_KEY"
+    const val LOGIN_PROVIDER = "LOGIN_PROVIDER"
 
 
     fun sendLogToCrashlytics(msg: String, vararg keys: String) {

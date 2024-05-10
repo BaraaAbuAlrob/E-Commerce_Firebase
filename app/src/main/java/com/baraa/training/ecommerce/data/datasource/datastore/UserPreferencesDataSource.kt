@@ -25,7 +25,7 @@ class UserPreferencesDataSource(private val context: Context) {
     }
 
     val isUserLoggedIn: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[DataStoreKeys.IS_USER_LOGGED_IN] ?: false
+        preferences[DataStoreKeys.IS_USER_LOGGED_IN] ?: false // it's false if it was null
     }
 
     val userID: Flow<String?> = context.dataStore.data.map { preferences ->

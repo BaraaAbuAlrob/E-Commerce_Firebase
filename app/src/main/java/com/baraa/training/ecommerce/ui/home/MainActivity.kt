@@ -13,20 +13,17 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.databinding.ActivityMainBinding
-import com.baraa.training.ecommerce.ui.login.AuthActivity
+import com.baraa.training.ecommerce.ui.auth.AuthActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         initSplashScreen()
+        goToAuthActivity()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.eCommerce.setOnClickListener {
-            goToAuthActivity()
-        }
     }
 
     @SuppressLint("Recycle")

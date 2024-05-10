@@ -1,15 +1,9 @@
 package com.baraa.training.ecommerce.data.repository.user
 
-import android.content.Context
-import androidx.datastore.preferences.core.edit
-import com.baraa.training.ecommerce.data.datasource.DataStoreKeys.IS_USER_LOGGED_IN
-import com.baraa.training.ecommerce.data.datasource.DataStoreKeys.USER_ID
-import com.baraa.training.ecommerce.data.datasource.dataStore
 import com.baraa.training.ecommerce.data.datasource.datastore.UserPreferencesDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
-class UserPreferenceRepositoryImplementation(
+class UserPreferenceRepositoryImpl(
     private val userPreferencesDataSource: UserPreferencesDataSource
 ) : UserPreferenceRepository {
 

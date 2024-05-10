@@ -1,4 +1,4 @@
-package com.baraa.training.ecommerce.ui.login
+package com.baraa.training.ecommerce.ui.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

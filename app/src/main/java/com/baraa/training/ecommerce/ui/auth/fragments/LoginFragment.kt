@@ -1,31 +1,40 @@
-package com.baraa.training.ecommerce.ui.login.fragments
+package com.baraa.training.ecommerce.ui.auth.fragments
 
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.datasource.datastore.UserPreferencesDataSource
+import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
-import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImplementation
+import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImpl
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
-import com.baraa.training.ecommerce.ui.login.viewmodel.LoginViewModel
-import com.baraa.training.ecommerce.ui.login.viewmodel.LoginViewModelFactory
+import com.baraa.training.ecommerce.ui.auth.viewmodel.AuthViewModel
+import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
+import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
+import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
+    private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
+
     private val loginViewModel: LoginViewModel by viewModels {
         LoginViewModelFactory(
-            userPrefs = UserPreferenceRepositoryImplementation(
+            userPrefs = UserPreferenceRepositoryImpl(
                 UserPreferencesDataSource(
                     requireActivity()
                 )
@@ -50,14 +59,39 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         changeEditTextStrokeAndStartDrawableColors()
         initListeners()
         initViewModel()
+
+        Log.d(TAG, "onViewCreated: ")
     }
 
     private fun initViewModel() {
         lifecycleScope.launch {
+            loginViewModel.loginState.collect { resource ->
+                Log.d(TAG, "initViewModel: $resource")
+                when (resource) {
+                    is Resource.Loading -> {
+                        progressDialog.show()
+                    }
 
+                    is Resource.Success -> {
+                        progressDialog.dismiss()
+                        Toast.makeText(
+                            requireContext(), "Login successfully", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is Resource.Error -> {
+                        progressDialog.dismiss()
+                        Log.d(TAG, "Resource.Error: ${resource.exception?.message}")
+                        Toast.makeText(
+                            requireContext(), resource.exception?.message, Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
         }
     }
 

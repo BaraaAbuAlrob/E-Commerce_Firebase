@@ -50,7 +50,7 @@ class LoginViewModel(
                         is Resource.Success
                         -> loginState.emit(
                             Resource.Success(
-                                resource.data.toString() ?: "Empty User Id"
+                                resource.data ?: "Empty User Id"
                             )
                         )
 

@@ -10,23 +10,38 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import com.baraa.training.ecommerce.BuildConfig
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.datasource.datastore.UserPreferencesDataSource
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImpl
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
-import com.baraa.training.ecommerce.ui.auth.viewmodel.AuthViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
-import kotlinx.coroutines.flow.collect
+import com.baraa.training.ecommerce.ui.showSnakeBarError
+import com.baraa.training.ecommerce.utils.CrashlyticsUtils
+import com.baraa.training.ecommerce.utils.LoginException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 
 class LoginFragment : Fragment() {
 
@@ -57,10 +72,14 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        changeEditTextStrokeAndStartDrawableColors()
+        GlobalScope.launch(newSingleThreadContext("colorChanges")){
+            changeEditTextStrokeAndStartDrawableColors()
+        }
+
         initListeners()
         initViewModel()
 
@@ -96,9 +115,107 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.loginBtn.setOnClickListener {
-            loginViewModel.login()
+        binding.googleSigninBtn.setOnClickListener {
+            loginWithGoogleRequest()
         }
+    }
+
+    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
+        CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
+            msg,
+            CrashlyticsUtils.LOGIN_KEY to msg,
+            CrashlyticsUtils.LOGIN_PROVIDER to provider,
+        )
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success")
+                    val email = task.result.user?.email
+                    Log.d(TAG, "firebaseAuthWithGoogle: $email")
+                    // Proceed to next activity or update UI
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                }
+            }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account.idToken!!)
+        } catch (e: Exception) {
+            val msg = e.message ?: getString(R.string.generic_err_msg)
+            view?.showSnakeBarError(msg)
+            logAuthIssueToCrashlytics(msg, "Google")
+        }
+    }
+
+    // ActivityResultLauncher for the sign-in intent
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleSignInResult(task)
+            } else {
+                view?.showSnakeBarError(getString(R.string.google_sign_in_field_msg))
+            }
+        }
+
+    private fun loginWithGoogleRequest() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.clientServerId).requestEmail().requestProfile()
+            .requestServerAuthCode(BuildConfig.clientServerId).build()
+
+        val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        googleSignInClient.signOut()
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
+        // End loginWithGoogleRequest() method
+
+        // Comments...
+
+        /* I'm get the value "clientServerId" from google-services.json file (the firebase file), in this section:
+        "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com",   <<<<<<<<<<<<
+              "client_type": 3
+            }
+          ]
+        }
+      }
+        */
+
+        /* I'm stored the id in the build.gradle.kts file, in this section:
+
+        buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        */
+        /**forEach {
+            it.buildConfigField(
+                "String", "clientServerId", "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
+                )
+            }
+        }
+
+        Don't forget add this features to gradle.properties (Project properties) file, the line is:
+            android.defaults.buildfeatures.buildconfig=true
+
+         then Sync and rebuild the project to create (automatically) the BuildConfig.java class
+         */
     }
 
     private fun changeEditTextStrokeAndStartDrawableColors() {

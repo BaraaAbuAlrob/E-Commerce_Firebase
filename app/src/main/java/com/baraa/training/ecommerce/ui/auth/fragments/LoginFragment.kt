@@ -76,14 +76,12 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GlobalScope.launch(newSingleThreadContext("colorChanges")){
+        GlobalScope.launch(newSingleThreadContext("colorChanges")) {
             changeEditTextStrokeAndStartDrawableColors()
         }
 
         initListeners()
         initViewModel()
-
-        Log.d(TAG, "onViewCreated: ")
     }
 
     private fun initViewModel() {
@@ -205,16 +203,16 @@ class LoginFragment : Fragment() {
         }
         */
         /**forEach {
-            it.buildConfigField(
-                "String", "clientServerId", "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
-                )
-            }
+        it.buildConfigField(
+        "String", "clientServerId", "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
+        )
+        }
         }
 
         Don't forget add this features to gradle.properties (Project properties) file, the line is:
-            android.defaults.buildfeatures.buildconfig=true
+        android.defaults.buildfeatures.buildconfig=true
 
-         then Sync and rebuild the project to create (automatically) the BuildConfig.java class
+        then Sync and rebuild the project to create (automatically) the BuildConfig.java class
          */
     }
 

@@ -4,9 +4,9 @@
     <item android:drawable="@color/primary_color" />
 
     <item
-        android:height="150dp"
-        android:width="150dp"
-        android:drawable="@drawable/ic_launcher"
+        android:height="100dp"
+        android:width="100dp"
+        android:drawable="@drawable/ic_splash_screen"
         android:gravity="center" />
 
 <!--The Brand (name of app owner), like facebook write from meta...-->

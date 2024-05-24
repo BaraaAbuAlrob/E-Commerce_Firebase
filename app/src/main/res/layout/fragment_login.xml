@@ -125,6 +125,14 @@
                 android:text="@string/facebook_signin_btn_msg"
                 tools:ignore="RtlHardcoded" />
 
+<!--            <com.facebook.login.widget.LoginButton-->
+<!--                android:id="@+id/facebook_signin_btn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_marginBottom="30dp" />-->
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/forgot_password_tv"
                 style="@style/MediumPrimaryTextViewStyle"

@@ -2,6 +2,7 @@ package com.baraa.training.ecommerce.data.repository.auth
 
 import android.util.Log
 import com.baraa.training.ecommerce.data.models.Resource
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,21 @@ class FirebaseAuthRepositoryImpl(private val auth: FirebaseAuth = FirebaseAuth.g
                 emit(Resource.Error(Exception("User not found")))
             }
         } catch (e: Exception) {
+            emit(Resource.Error(e))
+        }
+    }
+
+    override suspend fun loginWithFacebook(token: String): Flow<Resource<String>> = flow {
+        emit(Resource.Loading())
+        try {
+            val credential = FacebookAuthProvider.getCredential(token)
+            val authResult = auth.signInWithCredential(credential).await()
+            authResult.user?.let {
+                emit(Resource.Success(it.uid))
+            } ?: run {
+                emit(Resource.Error(Exception("User not found")))
+            }
+        } catch (e:Exception){
             emit(Resource.Error(e))
         }
     }

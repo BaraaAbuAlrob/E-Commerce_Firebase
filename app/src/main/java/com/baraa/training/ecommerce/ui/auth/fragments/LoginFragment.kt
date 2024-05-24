@@ -1,5 +1,6 @@
 package com.baraa.training.ecommerce.ui.auth.fragments
 
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -26,17 +28,23 @@ import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import com.baraa.training.ecommerce.ui.showRetrySnakeBarError
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.LoginException
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -44,6 +52,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
 class LoginFragment : Fragment() {
+
+    private lateinit var callbackManager: CallbackManager
+    private lateinit var loginManager: LoginManager
 
     private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
 
@@ -80,6 +91,9 @@ class LoginFragment : Fragment() {
             changeEditTextStrokeAndStartDrawableColors()
         }
 
+        callbackManager = CallbackManager.Factory.create()
+        loginManager = LoginManager.getInstance()
+
         initListeners()
         initViewModel()
     }
@@ -95,17 +109,13 @@ class LoginFragment : Fragment() {
 
                     is Resource.Success -> {
                         progressDialog.dismiss()
-                        Toast.makeText(
-                            requireContext(), "Login successfully", Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     is Resource.Error -> {
                         progressDialog.dismiss()
-                        Log.d(TAG, "Resource.Error: ${resource.exception?.message}")
-                        Toast.makeText(
-                            requireContext(), resource.exception?.message, Toast.LENGTH_SHORT
-                        ).show()
+                        val msg = resource.exception?.message ?: getString(R.string.generic_err_msg)
+                        view?.showSnakeBarError(msg)
+                        logAuthIssueToCrashlytics(msg, "Login Error")
                     }
                 }
             }
@@ -116,6 +126,54 @@ class LoginFragment : Fragment() {
         binding.googleSigninBtn.setOnClickListener {
             loginWithGoogleRequest()
         }
+
+        binding.facebookSigninBtn.setOnClickListener {
+            if (isLoggedIn()) {
+                signOut()
+            } else {
+                loginWithFacebook()
+            }
+        }
+    }
+
+    private fun isLoggedIn(): Boolean {
+        val accessToken = AccessToken.getCurrentAccessToken()
+        return accessToken != null && !accessToken.isExpired
+    }
+
+    private fun signOut() {
+        loginManager.logOut()
+        Log.d(TAG, "signOut")
+    }
+
+    private fun loginWithFacebook() {
+        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult>{
+            override fun onSuccess(result: LoginResult) {
+                val token = result.accessToken.token
+                loginViewModel.loginWithFacebook(token)
+            }
+
+            override fun onCancel() {
+                // Handle login cancel
+            }
+
+            override fun onError(error: FacebookException) {
+                val msg = error.message ?: getString(R.string.generic_err_msg)
+                view?.showSnakeBarError(msg)
+                logAuthIssueToCrashlytics(msg, "Facebook")
+            }
+        })
+
+        loginManager.logInWithReadPermissions(
+            this,
+            listOf("email", "pubic_profile")
+        )
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
@@ -209,84 +267,38 @@ class LoginFragment : Fragment() {
         val passwordLayout = binding.passwordLayoutEdText
         val passwordEditText = binding.passwordFiledEdText
 
-        emailEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed for this case
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed for this case
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-                // Change the tint of the drawableStart only when there is text
-                val drawable =
-                    emailEditText.compoundDrawables[0] // Assuming drawableStart is at index 0
-                val wrappedDrawable = DrawableCompat.wrap(drawable!!)
-                DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.SRC_IN)
-                if (!s.isNullOrEmpty()) {
-                    // Change the stroke color
-                    emailLayout.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.primary_color)
-
-                    //For the drawableStart color
-                    DrawableCompat.setTint(
-                        wrappedDrawable,
-                        ContextCompat.getColor(requireContext(), R.color.primary_color)
-                    )
-                } else {
-                    // Set the default stroke color when no text is entered
-                    emailLayout.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.neutral_grey)
-
-                    // Reset the tint if there is no text
-                    DrawableCompat.setTint(
-                        wrappedDrawable,
-                        ContextCompat.getColor(requireContext(), R.color.neutral_grey)
-                    )
+        // Extension function to handle text changes and update UI accordingly
+        fun EditText.addCustomTextWatcher(layout: TextInputLayout) {
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // Not needed for this case
                 }
-            }
-        })
 
-        passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed for this case
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed for this case
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // Change the tint of the drawableStart only when there is text
-                val drawable =
-                    passwordEditText.compoundDrawables[0] // Assuming drawableStart is at index 0
-                val wrappedDrawable = DrawableCompat.wrap(drawable!!)
-                DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.SRC_IN)
-                if (!s.isNullOrEmpty()) {
-                    // Change the stroke color
-                    passwordLayout.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.primary_color)
-
-                    //For the drawableStart color
-                    DrawableCompat.setTint(
-                        wrappedDrawable,
-                        ContextCompat.getColor(requireContext(), R.color.primary_color)
-                    )
-                } else {
-                    // Set the default stroke color when no text is entered
-                    passwordLayout.boxStrokeColor =
-                        ContextCompat.getColor(requireContext(), R.color.neutral_grey)
-
-                    // Reset the tint if there is no text
-                    DrawableCompat.setTint(
-                        wrappedDrawable,
-                        ContextCompat.getColor(requireContext(), R.color.neutral_grey)
-                    )
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Not needed for this case
                 }
-            }
-        })
+
+                override fun afterTextChanged(s: Editable?) {
+                    val drawable = compoundDrawables[0] // Assuming drawableStart is at index 0
+                    drawable?.let {
+                        val wrappedDrawable = DrawableCompat.wrap(it)
+                        DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.SRC_IN)
+                        val color =
+                            if (s.isNullOrEmpty())
+                                R.color.neutral_grey
+                            else
+                                R.color.primary_color
+
+                        layout.boxStrokeColor = ContextCompat.getColor(requireContext(), color)
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(requireContext(), color))
+                    }
+                }
+            })
+        }
+
+        // Apply the text watcher to both EditTexts
+        emailEditText.addCustomTextWatcher(emailLayout)
+        passwordEditText.addCustomTextWatcher(passwordLayout)
     }
 
     companion object {

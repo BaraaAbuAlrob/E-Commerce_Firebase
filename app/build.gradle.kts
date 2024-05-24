@@ -70,7 +70,10 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0")
-    implementation("com.google.android.gms:play-services-auth:21.1.1")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // Facebook auth dependency
+    implementation ("com.facebook.android:facebook-android-sdk:16.0.0")
 
 
     // third party libraries

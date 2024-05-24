@@ -32,8 +32,34 @@ android {
 
         forEach {
             it.buildConfigField(
-                "String", "clientServerId", "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
-                )
+                "String",
+                "clientServerId",
+                "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
+            )
+
+            it.resValue(
+                "string",
+                "facebook_app_id",
+                "\"2233780743625951\""
+            )
+
+            it.resValue(
+                "string",
+                "fb_login_protocol_scheme",
+                "\"fb2233780743625951\""
+            )
+
+            it.resValue(
+                "string",
+                "facebook_client_token",
+                "\"c98ce6e53ebcbb0c42fe3c226f4e9cb2\""
+            )
+
+            it.resValue(
+                "string",
+                "facebook_app_secret",
+                "\"7ab35de007b68495f78c180a426deba9\""
+            )
         }
     }
     compileOptions {
@@ -44,7 +70,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
         viewBinding = true
     }
@@ -73,7 +99,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 
     // Facebook auth dependency
-    implementation ("com.facebook.android:facebook-android-sdk:16.0.0")
+    implementation("com.facebook.android:facebook-android-sdk:16.0.0")
 
 
     // third party libraries
@@ -86,7 +112,7 @@ dependencies {
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
 
     // Material Design
-    api ("com.google.android.material:material:1.12.0")
+    api("com.google.android.material:material:1.12.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

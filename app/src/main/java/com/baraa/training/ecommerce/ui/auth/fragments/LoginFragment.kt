@@ -6,16 +6,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.baraa.training.ecommerce.BuildConfig
@@ -28,7 +27,6 @@ import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
-import com.baraa.training.ecommerce.ui.showRetrySnakeBarError
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.LoginException
@@ -53,8 +51,8 @@ import kotlinx.coroutines.newSingleThreadContext
 
 class LoginFragment : Fragment() {
 
-    private lateinit var callbackManager: CallbackManager
-    private lateinit var loginManager: LoginManager
+    private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
+    private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
     private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
 
@@ -90,9 +88,6 @@ class LoginFragment : Fragment() {
         GlobalScope.launch(newSingleThreadContext("colorChanges")) {
             changeEditTextStrokeAndStartDrawableColors()
         }
-
-        callbackManager = CallbackManager.Factory.create()
-        loginManager = LoginManager.getInstance()
 
         initListeners()
         initViewModel()
@@ -166,6 +161,7 @@ class LoginFragment : Fragment() {
 
         loginManager.logInWithReadPermissions(
             this,
+            callbackManager,
             listOf("email", "pubic_profile")
         )
     }

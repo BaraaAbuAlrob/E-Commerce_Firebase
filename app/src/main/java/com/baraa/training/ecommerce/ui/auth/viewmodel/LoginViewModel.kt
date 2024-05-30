@@ -7,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepository
 import com.baraa.training.ecommerce.data.repository.common.AppPreferenceRepository
-import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepository
 import com.baraa.training.ecommerce.utils.isValidEmail
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

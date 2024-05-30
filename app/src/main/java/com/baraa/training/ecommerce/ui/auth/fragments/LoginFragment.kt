@@ -20,11 +20,9 @@ import androidx.lifecycle.lifecycleScope
 import com.baraa.training.ecommerce.BuildConfig
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.datasource.datastore.AppPreferencesDataSource
-import com.baraa.training.ecommerce.data.datasource.datastore.UserPreferencesDataSource
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.common.AppDataStoreRepositoryImpl
-import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImpl
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory

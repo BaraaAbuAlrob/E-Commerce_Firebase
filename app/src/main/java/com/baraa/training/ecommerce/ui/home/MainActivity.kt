@@ -1,4 +1,4 @@
-package com.training.ecommerce.ui.home
+package com.baraa.training.ecommerce.ui.home
 
 import android.animation.ObjectAnimator
 import android.app.ActivityOptions

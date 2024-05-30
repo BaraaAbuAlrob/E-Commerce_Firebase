@@ -13,6 +13,20 @@ fun View.showSnakeBarError(message: String) {
         .show()
 }
 
+fun View.showSnakeBarLoggedIn(message: String = "Logged in successfully!") {
+    Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+        .setAction(this.context.resources.getString(R.string.ok)) {}
+        .setActionTextColor(ContextCompat.getColor(this.context, R.color.white))
+        .show()
+}
+
+fun View.showSnakeBarRegistered(message: String = "Registered successfully!") {
+    Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
+        .setAction(this.context.resources.getString(R.string.ok)) {}
+        .setActionTextColor(ContextCompat.getColor(this.context, R.color.white))
+        .show()
+}
+
 fun View.showRetrySnakeBarError(message: String, retry: () -> Unit) {
     Snackbar.make(this, message, Snackbar.LENGTH_INDEFINITE)
         .setAction(this.context.resources.getString(R.string.retry)) { retry.invoke() }

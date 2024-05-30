@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepository
+import com.baraa.training.ecommerce.data.repository.common.AppPreferenceRepository
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepository
 import com.baraa.training.ecommerce.utils.isValidEmail
 import com.google.firebase.auth.FirebaseAuth
@@ -23,7 +24,7 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class LoginViewModel(
-    private val userPrefs: UserPreferenceRepository,
+    private val userPrefs: AppPreferenceRepository,
     private val authRepository: FirebaseAuthRepository,
 ) : ViewModel() {
 
@@ -93,7 +94,7 @@ class LoginViewModel(
 
 // create viewmodel factory class
 class LoginViewModelFactory(
-    private val userPrefs: UserPreferenceRepository,
+    private val userPrefs: AppPreferenceRepository,
     private val authRepository: FirebaseAuthRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

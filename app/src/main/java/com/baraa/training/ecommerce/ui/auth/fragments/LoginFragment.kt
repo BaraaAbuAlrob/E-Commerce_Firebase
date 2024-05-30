@@ -19,15 +19,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.baraa.training.ecommerce.BuildConfig
 import com.baraa.training.ecommerce.R
+import com.baraa.training.ecommerce.data.datasource.datastore.AppPreferencesDataSource
 import com.baraa.training.ecommerce.data.datasource.datastore.UserPreferencesDataSource
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
+import com.baraa.training.ecommerce.data.repository.common.AppDataStoreRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImpl
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
 import com.baraa.training.ecommerce.ui.showSnakeBarError
+import com.baraa.training.ecommerce.ui.showSnakeBarLoggedIn
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.LoginException
 import com.facebook.AccessToken
@@ -58,12 +61,11 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by viewModels {
         LoginViewModelFactory(
-            userPrefs = UserPreferenceRepositoryImpl(
-                UserPreferencesDataSource(
+            userPrefs = AppDataStoreRepositoryImpl(
+                AppPreferencesDataSource(
                     requireActivity()
                 )
-            ),
-            authRepository = FirebaseAuthRepositoryImpl()
+            ), authRepository = FirebaseAuthRepositoryImpl()
         )
     }
 
@@ -104,6 +106,7 @@ class LoginFragment : Fragment() {
 
                     is Resource.Success -> {
                         progressDialog.dismiss()
+                        view?.showSnakeBarLoggedIn()
                     }
 
                     is Resource.Error -> {

@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -111,6 +112,9 @@ class LoginFragment : Fragment() {
         }
         binding.facebookSigninBtn.setOnClickListener {
             loginWithFacebook()
+        }
+        binding.registerTv.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 

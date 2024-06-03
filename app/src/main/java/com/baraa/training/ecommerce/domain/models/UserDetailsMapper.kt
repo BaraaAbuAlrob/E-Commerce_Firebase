@@ -16,7 +16,7 @@ fun UserDetailsPreferences.toUserDetailsModel(): UserDetailsModel {
 
 fun UserDetailsModel.toUserDetailsPreferences(): UserDetailsPreferences {
     return UserDetailsPreferences.newBuilder()
-        .setCreatedAt(createdAt ?: 0)
+        .setCreatedAt(createdAt)
         .setId(id)
         .setEmail(email)
         .setName(name)

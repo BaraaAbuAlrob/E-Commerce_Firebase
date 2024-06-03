@@ -112,13 +112,12 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
 
-    val lifecycle_version = "2.7.0"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
+    implementation("androidx.fragment:fragment-ktx:1.7.1")
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.google.protobuf:protobuf-kotlin-lite:4.26.0")
 
     // Material Design

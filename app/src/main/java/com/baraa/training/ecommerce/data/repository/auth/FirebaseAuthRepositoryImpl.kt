@@ -1,63 +1,93 @@
 package com.baraa.training.ecommerce.data.repository.auth
 
-import android.util.Log
-import com.baraa.training.ecommerce.data.models.Resource
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import com.baraa.training.ecommerce.data.models.Resource
+import com.baraa.training.ecommerce.data.models.user.AuthProvider
+import com.baraa.training.ecommerce.data.models.user.UserDetailsModel
+import com.baraa.training.ecommerce.utils.CrashlyticsUtils
+import com.baraa.training.ecommerce.utils.LoginException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class FirebaseAuthRepositoryImpl(private val auth: FirebaseAuth = FirebaseAuth.getInstance()) :
-    FirebaseAuthRepository {
+class FirebaseAuthRepositoryImpl(
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) : FirebaseAuthRepository {
 
+    // Example usage for email and password login
     override suspend fun loginWithEmailAndPassword(
         email: String, password: String
-    ): Flow<Resource<String>> = flow {
+    ) = login(AuthProvider.EMAIL) { auth.signInWithEmailAndPassword(email, password).await() }
+
+    override suspend fun loginWithGoogle(idToken: String) = login(AuthProvider.GOOGLE) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential).await()
+    }
+
+    // Example usage for Facebook login
+    override suspend fun loginWithFacebook(token: String) = login(AuthProvider.FACEBOOK) {
+        val credential = FacebookAuthProvider.getCredential(token)
+        auth.signInWithCredential(credential).await()
+    }
+
+    private suspend fun login(
+        provider: AuthProvider,
+        signInRequest: suspend () -> AuthResult,
+    ): Flow<Resource<UserDetailsModel>> = flow {
         try {
             emit(Resource.Loading())
-            // suspends the coroutine until the task is complete
-            val authResult = auth.signInWithEmailAndPassword(email, password).await()
-            authResult.user?.let { user ->
-                Log.d(TAG, "loginWithEmailAndPassword: ${user.uid}")
-                emit(Resource.Success(user.uid)) // Emit the result
+            // perform firebase auth sign in request
+            val authResult = signInRequest()
+            val userId = authResult.user?.uid
+
+            if (userId == null) {
+                val msg = "Sign in UserID not found"
+                logAuthIssueToCrashlytics(msg, provider.name)
+                emit(Resource.Error(Exception(msg)))
+                return@flow
+            }
+
+            // get user details from firestore
+            val userDoc = firestore.collection("users").document(userId).get().await()
+            if (!userDoc.exists()) {
+                val msg = "Logged in user not found in firestore"
+                logAuthIssueToCrashlytics(msg, provider.name)
+                emit(Resource.Error(Exception(msg)))
+                return@flow
+            }
+
+            // map user details to UserDetailsModel
+            val userDetails = userDoc.toObject(UserDetailsModel::class.java)
+            userDetails?.let {
+                emit(Resource.Success(userDetails))
             } ?: run {
-                emit(Resource.Error(Exception("User not found")))
+                val msg = "Error mapping user details to UserDetailsModel, user id = $userId"
+                logAuthIssueToCrashlytics(msg, provider.name)
+                emit(Resource.Error(Exception(msg)))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(e))
+            logAuthIssueToCrashlytics(
+                e.message ?: "Unknown error from exception = ${e::class.java}", provider.name
+            )
+            emit(Resource.Error(e)) // Emit error
         }
     }
 
-    override suspend fun loginWithGoogle(idToken: String): Flow<Resource<String>> = flow {
-        try {
-            emit(Resource.Loading())
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            val authResult = auth.signInWithCredential(credential).await()
-            authResult.user?.let { user ->
-                emit(Resource.Success(user.uid))
-            } ?: run {
-                emit(Resource.Error(Exception("User not found")))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error(e))
-        }
+    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
+        CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
+            msg,
+            CrashlyticsUtils.LOGIN_KEY to msg,
+            CrashlyticsUtils.LOGIN_PROVIDER to provider,
+        )
     }
 
-    override suspend fun loginWithFacebook(token: String): Flow<Resource<String>> = flow {
-        emit(Resource.Loading())
-        try {
-            val credential = FacebookAuthProvider.getCredential(token)
-            val authResult = auth.signInWithCredential(credential).await()
-            authResult.user?.let {
-                emit(Resource.Success(it.uid))
-            } ?: run {
-                emit(Resource.Error(Exception("User not found")))
-            }
-        } catch (e:Exception){
-            emit(Resource.Error(e))
-        }
+    override fun logout() {
+        auth.signOut()
     }
 
     companion object {

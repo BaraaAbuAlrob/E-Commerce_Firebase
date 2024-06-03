@@ -10,10 +10,10 @@ import kotlinx.parcelize.Parcelize
 data class UserDetailsModel(
     @get:PropertyName("created_at")
     @set:PropertyName("created_at")
-    var createdAt: Long? = null,
+    var createdAt: Int? = null,
     var id: String? = null,
     var email: String? = null,
     var name: String? = null,
     var disabled: Boolean? = null,
-    var reviews: List<String>? = null
+    var reviews: List<String>? = null,
 ) : Parcelable

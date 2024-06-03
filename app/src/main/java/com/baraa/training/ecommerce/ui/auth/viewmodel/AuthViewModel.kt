@@ -1,9 +1,9 @@
 package com.baraa.training.ecommerce.ui.auth.viewmodel
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class AuthViewModel: ViewModel() {
 
-    val userId = "555"
-
+    val useId = MutableStateFlow("")
 }

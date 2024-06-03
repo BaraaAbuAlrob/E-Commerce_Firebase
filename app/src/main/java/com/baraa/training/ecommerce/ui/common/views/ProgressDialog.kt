@@ -1,6 +1,5 @@
 package com.baraa.training.ecommerce.ui.common.views
 
-
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -17,7 +16,7 @@ class ProgressDialog {
                 LayoutInflater.from(context).inflate(R.layout.progress_dialog_layout, null)
             dialog.setContentView(inflate)
             dialog.setCancelable(false)
-            dialog.window!!.setBackgroundDrawable(
+            dialog.window?.setBackgroundDrawable(
                 ColorDrawable(Color.TRANSPARENT)
             )
             return dialog

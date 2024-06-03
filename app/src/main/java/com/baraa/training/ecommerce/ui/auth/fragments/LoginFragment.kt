@@ -17,20 +17,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.baraa.training.ecommerce.BuildConfig
-import com.baraa.training.ecommerce.R
-import com.baraa.training.ecommerce.data.datasource.datastore.AppPreferencesDataSource
-import com.baraa.training.ecommerce.data.models.Resource
-import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
-import com.baraa.training.ecommerce.data.repository.common.AppDataStoreRepositoryImpl
-import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
-import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
-import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
-import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
-import com.baraa.training.ecommerce.ui.showSnakeBarError
-import com.baraa.training.ecommerce.ui.showSnakeBarLoggedIn
-import com.baraa.training.ecommerce.utils.CrashlyticsUtils
-import com.baraa.training.ecommerce.utils.LoginException
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -43,36 +29,35 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.baraa.training.ecommerce.BuildConfig
+import com.baraa.training.ecommerce.R
+import com.baraa.training.ecommerce.data.models.Resource
+import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
+import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
+import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
+import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import com.baraa.training.ecommerce.ui.home.MainActivity
+import com.baraa.training.ecommerce.ui.showSnakeBarError
+import com.baraa.training.ecommerce.utils.CrashlyticsUtils
+import com.baraa.training.ecommerce.utils.LoginException
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 
 class LoginFragment : Fragment() {
-
     private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
     private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
 
     private val loginViewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory(
-            userPrefs = AppDataStoreRepositoryImpl(
-                AppPreferencesDataSource(
-                    requireActivity()
-                )
-            ), authRepository = FirebaseAuthRepositoryImpl()
-        )
+        LoginViewModelFactory(contextValue = requireContext())
     }
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -81,14 +66,10 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        GlobalScope.launch(newSingleThreadContext("colorChanges")) {
-            changeEditTextStrokeAndStartDrawableColors()
-        }
-
+        changeEditTextStrokeAndStartDrawableColors()
         initListeners()
         initViewModel()
     }
@@ -96,7 +77,6 @@ class LoginFragment : Fragment() {
     private fun initViewModel() {
         lifecycleScope.launch {
             loginViewModel.loginState.collect { resource ->
-                Log.d(TAG, "initViewModel: $resource")
                 when (resource) {
                     is Resource.Loading -> {
                         progressDialog.show()
@@ -104,95 +84,33 @@ class LoginFragment : Fragment() {
 
                     is Resource.Success -> {
                         progressDialog.dismiss()
-                        view?.showSnakeBarLoggedIn()
+                        goToHome()
                     }
 
                     is Resource.Error -> {
                         progressDialog.dismiss()
                         val msg = resource.exception?.message ?: getString(R.string.generic_err_msg)
+                        Log.d(TAG, "initViewModelError: $msg")
                         view?.showSnakeBarError(msg)
-                        logAuthIssueToCrashlytics(msg, "Login Error")
                     }
                 }
             }
         }
     }
 
+    private fun goToHome() {
+        requireActivity().startActivity(Intent(activity, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        requireActivity().finish()
+    }
+
     private fun initListeners() {
         binding.googleSigninBtn.setOnClickListener {
             loginWithGoogleRequest()
         }
-
         binding.facebookSigninBtn.setOnClickListener {
-            if (isLoggedIn()) {
-                signOut()
-            } else {
-                loginWithFacebook()
-            }
-        }
-    }
-
-    private fun isLoggedIn(): Boolean {
-        val accessToken = AccessToken.getCurrentAccessToken()
-        return accessToken != null && !accessToken.isExpired
-    }
-
-    private fun signOut() {
-        loginManager.logOut()
-        Log.d(TAG, "signOut")
-    }
-
-    private fun loginWithFacebook() {
-        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult>{
-            override fun onSuccess(result: LoginResult) {
-                val token = result.accessToken.token
-                loginViewModel.loginWithFacebook(token)
-            }
-
-            override fun onCancel() {
-                // Handle login cancel
-            }
-
-            override fun onError(error: FacebookException) {
-                val msg = error.message ?: getString(R.string.generic_err_msg)
-                view?.showSnakeBarError(msg)
-                logAuthIssueToCrashlytics(msg, "Facebook")
-            }
-        })
-
-        loginManager.logInWithReadPermissions(
-            this,
-            callbackManager,
-            listOf("email", "pubic_profile")
-        )
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
-        CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
-            msg,
-            CrashlyticsUtils.LOGIN_KEY to msg,
-            CrashlyticsUtils.LOGIN_PROVIDER to provider,
-        )
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        loginViewModel.loginWithGoogle(idToken)
-    }
-
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-            firebaseAuthWithGoogle(account.idToken!!)
-        } catch (e: Exception) {
-            val msg = e.message ?: getString(R.string.generic_err_msg)
-            view?.showSnakeBarError(msg)
-            logAuthIssueToCrashlytics(msg, "Google")
+            loginWithFacebook()
         }
     }
 
@@ -258,6 +176,75 @@ class LoginFragment : Fragment() {
          */
     }
 
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account.idToken!!)
+        } catch (e: Exception) {
+            view?.showSnakeBarError(e.message ?: getString(R.string.generic_err_msg))
+            val msg = e.message ?: getString(R.string.generic_err_msg)
+            logAuthIssueToCrashlytics(msg, "Google")
+        }
+    }
+
+    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
+        CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
+            msg,
+            CrashlyticsUtils.LOGIN_KEY to msg,
+            CrashlyticsUtils.LOGIN_PROVIDER to provider
+        )
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        loginViewModel.loginWithGoogle(idToken)
+    }
+
+    private fun signOut() {
+        loginManager.logOut()
+        Log.d(TAG, "signOut: ")
+    }
+
+    private fun isLoggedIn(): Boolean {
+        val accessToken = AccessToken.getCurrentAccessToken()
+        return accessToken != null && !accessToken.isExpired
+    }
+
+    private fun loginWithFacebook() {
+        if (isLoggedIn()) signOut()
+        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                val token = result.accessToken.token
+                Log.d(TAG, "onSuccess: $token")
+                firebaseAuthWithFacebook(token)
+            }
+
+            override fun onCancel() {
+                // Handle login cancel
+            }
+
+            override fun onError(error: FacebookException) {
+                // Handle login error
+                val msg = error.message ?: getString(R.string.generic_err_msg)
+                Log.d(TAG, "onError: $msg")
+                view?.showSnakeBarError(msg)
+                logAuthIssueToCrashlytics(msg, "Facebook")
+            }
+        })
+
+        loginManager.logInWithReadPermissions(
+            this, callbackManager, listOf("email", "public_profile")
+        )
+    }
+
+    private fun firebaseAuthWithFacebook(token: String) {
+        loginViewModel.loginWithFacebook(token)
+    }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        callbackManager.onActivityResult(requestCode, resultCode, data)
+//    }
+
     private fun changeEditTextStrokeAndStartDrawableColors() {
         val emailLayout = binding.emailLayoutEdText
         val emailEditText = binding.emailFiledEdText
@@ -298,7 +285,13 @@ class LoginFragment : Fragment() {
         passwordEditText.addCustomTextWatcher(passwordLayout)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
-        const val TAG = "LoginFragment"
+
+        private const val TAG = "LoginFragment"
     }
 }

@@ -34,6 +34,7 @@ import com.baraa.training.ecommerce.BuildConfig
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
+import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
@@ -130,54 +131,8 @@ class LoginFragment : Fragment() {
         }
 
     private fun loginWithGoogleRequest() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.clientServerId).requestEmail().requestProfile()
-            .requestServerAuthCode(BuildConfig.clientServerId).build()
-
-        val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-        googleSignInClient.signOut()
-        val signInIntent = googleSignInClient.signInIntent
+        val signInIntent = getGoogleRequestIntent(requireActivity())
         launcher.launch(signInIntent)
-        // End loginWithGoogleRequest() method
-
-        // Comments...
-
-        /* I'm get the value "clientServerId" from google-services.json file (the firebase file), in this section:
-        "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com",   <<<<<<<<<<<<
-              "client_type": 3
-            }
-          ]
-        }
-      }
-        */
-
-        /* I'm stored the id in the build.gradle.kts file, in this section:
-
-        buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        */
-        /**forEach {
-        it.buildConfigField(
-        "String", "clientServerId", "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
-        )
-        }
-        }
-
-        Don't forget add this features to gradle.properties (Project properties) file, the line is:
-        android.defaults.buildfeatures.buildconfig=true
-
-        then Sync and rebuild the project to create (automatically) the BuildConfig.java class
-         */
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {

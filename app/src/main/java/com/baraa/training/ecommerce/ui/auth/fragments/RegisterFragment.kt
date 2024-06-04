@@ -21,6 +21,7 @@ import com.baraa.training.ecommerce.BuildConfig
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentRegisterBinding
+import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
@@ -160,13 +161,7 @@ class RegisterFragment : Fragment() {
         }
 
     private fun registerWithGoogleRequest() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.clientServerId).requestEmail().requestProfile()
-            .requestServerAuthCode(BuildConfig.clientServerId).build()
-
-        val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-        googleSignInClient.signOut()
-        val signInIntent = googleSignInClient.signInIntent
+        val signInIntent = getGoogleRequestIntent(requireActivity())
         launcher.launch(signInIntent)
     }
 

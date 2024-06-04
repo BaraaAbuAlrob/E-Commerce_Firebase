@@ -57,6 +57,12 @@ class RegisterViewModel(
             // emit error
         }
     }
+
+    fun signUpWithGoogle(idToken: String) = viewModelScope.launch {
+        authRepository.registerWithGoogle(idToken).collect {
+            _registerState.emit(it)
+        }
+    }
 }
 
 // create viewmodel factory class

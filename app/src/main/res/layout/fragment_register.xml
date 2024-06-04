@@ -141,14 +141,14 @@
             </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/google_signin_btn"
+                android:id="@+id/google_signup_btn"
                 style="@style/SocialButtonStyle"
                 android:drawableLeft="@drawable/ic_google"
                 android:text="@string/google_signup_btn_msg"
                 tools:ignore="RtlHardcoded" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/facebook_signin_btn"
+                android:id="@+id/facebook_signup_btn"
                 style="@style/SocialButtonStyle"
                 android:drawableLeft="@drawable/ic_facebook"
                 android:text="@string/facebook_signup_btn_msg"

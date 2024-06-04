@@ -107,6 +107,42 @@ class FirebaseAuthRepositoryImpl(
         }
     }
 
+    override suspend fun registerWithFacebook(token: String): Flow<Resource<UserDetailsModel>> {
+        return flow {
+            try {
+                emit(Resource.Loading())
+                // perform firebase auth sign up request
+                val credential = FacebookAuthProvider.getCredential(token)
+                val authResult = auth.signInWithCredential(credential).await()
+                val userId = authResult.user?.uid
+
+                if (userId == null) {
+                    val msg = "Sign up UserID not found"
+                    logAuthIssueToCrashlytics(msg, AuthProvider.FACEBOOK.name)
+                    emit(Resource.Error(Exception(msg)))
+                    return@flow
+                }
+
+                // create user details object
+                val userDetails = UserDetailsModel(
+                    id = userId,
+                    name = authResult.user?.displayName ?: "",
+                    email = authResult.user?.email ?: "",
+                    createdAt = System.currentTimeMillis()
+                )
+                // save user details to firestore
+                firestore.collection("users").document(userId).set(userDetails).await()
+                emit(Resource.Success(userDetails))
+            } catch (e: Exception) {
+                logAuthIssueToCrashlytics(
+                    e.message ?: "Unknown error from exception = ${e::class.java}",
+                    AuthProvider.FACEBOOK.name
+                )
+                emit(Resource.Error(e)) // Emit error
+            }
+        }
+    }
+
     private suspend fun login(
         provider: AuthProvider,
         signInRequest: suspend () -> AuthResult,

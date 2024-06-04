@@ -63,6 +63,12 @@ class RegisterViewModel(
             _registerState.emit(it)
         }
     }
+
+    fun registerWithFacebook(token: String) = viewModelScope.launch {
+        authRepository.registerWithFacebook(token).collect {
+            _registerState.emit(it)
+        }
+    }
 }
 
 // create viewmodel factory class

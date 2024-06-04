@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,12 @@ import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.RegisterException
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -37,6 +44,9 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
+
+    private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
+    private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
     private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
 
@@ -73,8 +83,48 @@ class RegisterFragment : Fragment() {
             registerWithGoogleRequest()
         }
         binding.facebookSignupBtn.setOnClickListener {
-//            loginWithFacebook()
+            registerWithFacebook()
         }
+    }
+
+    private fun signOut() {
+        loginManager.logOut()
+    }
+
+    private fun isLoggedIn(): Boolean {
+        val accessToken = AccessToken.getCurrentAccessToken()
+        return accessToken != null && !accessToken.isExpired
+    }
+
+    private fun registerWithFacebook() {
+        if (isLoggedIn()) signOut()
+        loginManager.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult) {
+                val token = result.accessToken.token
+                Log.d(TAG, "onSuccess: $token")
+                firebaseAuthWithFacebook(token)
+            }
+
+            override fun onCancel() {
+                // Handle login cancel
+            }
+
+            override fun onError(error: FacebookException) {
+                // Handle login error
+                val msg = error.message ?: getString(R.string.generic_err_msg)
+                Log.d(TAG, "onError: $msg")
+                view?.showSnakeBarError(msg)
+                logAuthIssueToCrashlytics(msg, "Facebook")
+            }
+        })
+
+        loginManager.logInWithReadPermissions(
+            this, callbackManager, listOf("email", "public_profile")
+        )
+    }
+
+    private fun firebaseAuthWithFacebook(token: String) {
+        registerViewModel.registerWithFacebook(token)
     }
 
     private fun initViewModel() {
@@ -200,5 +250,9 @@ class RegisterFragment : Fragment() {
         emailEditText.addCustomTextWatcher(emailLayout)
         passwordEditText.addCustomTextWatcher(passwordLayout)
         confirmPasswordEditText.addCustomTextWatcher(confirmPasswordLayout)
+    }
+
+    companion object {
+        private const val TAG = "RegisterFragment"
     }
 }

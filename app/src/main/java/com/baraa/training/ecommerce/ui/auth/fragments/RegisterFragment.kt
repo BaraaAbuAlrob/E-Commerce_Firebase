@@ -20,6 +20,7 @@ import com.baraa.training.ecommerce.databinding.FragmentRegisterBinding
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModelFactory
 import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
@@ -68,6 +69,7 @@ class RegisterFragment : Fragment() {
 
                     is Resource.Success -> {
                         progressDialog.dismiss()
+                        showRegisterSuccessDialog()
                     }
 
                     is Resource.Error -> {
@@ -76,6 +78,18 @@ class RegisterFragment : Fragment() {
                 }
             }
         }
+    }
+
+    // create successful register dialog function
+    private fun showRegisterSuccessDialog() {
+        MaterialAlertDialogBuilder(requireActivity()).setTitle("Login Success")
+            .setMessage("We have sent you an email verification link. Please verify your email to login.")
+            .setPositiveButton(
+                "OK"
+            ) { dialog, _ ->
+                dialog?.dismiss()
+                findNavController().popBackStack()
+            }.create().show()
     }
 
     private fun changeEditTextStrokeAndStartDrawableColors() {

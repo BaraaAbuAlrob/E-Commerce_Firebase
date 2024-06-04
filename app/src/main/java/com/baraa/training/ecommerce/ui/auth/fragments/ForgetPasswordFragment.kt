@@ -90,11 +90,6 @@ class ForgetPasswordFragment : BottomSheetDialogFragment() {
             }.create().show()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun changeEditTextStrokeAndStartDrawableColors() {
         val emailLayout = binding.emailEtLayout
         val emailEditText = binding.emailEtField
@@ -130,6 +125,11 @@ class ForgetPasswordFragment : BottomSheetDialogFragment() {
 
         // Apply the text watcher to both EditTexts
         emailEditText.addCustomTextWatcher(emailLayout)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

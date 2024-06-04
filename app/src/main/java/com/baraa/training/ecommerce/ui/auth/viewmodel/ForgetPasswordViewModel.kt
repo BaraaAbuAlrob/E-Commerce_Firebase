@@ -22,7 +22,13 @@ class ForgetPasswordViewModel(private val authRepository: FirebaseAuthRepository
     val email = MutableStateFlow("")
 
     fun sendUpdatePasswordEmail() = viewModelScope.launch(IO) {
-        //TODO: Implement sendUpdatePasswordEmail
+        if (email.value.isValidEmail()) {
+            authRepository.sendUpdatePasswordEmail(email.value).collect {
+                _forgetPasswordState.emit(it)
+            }
+        } else {
+            _forgetPasswordState.emit(Resource.Error(Exception("Invalid email")))
+        }
     }
 }
 

@@ -143,6 +143,18 @@ class FirebaseAuthRepositoryImpl(
         }
     }
 
+    override suspend fun sendUpdatePasswordEmail(email: String): Flow<Resource<String>> {
+        return flow {
+            try {
+                emit(Resource.Loading())
+                auth.sendPasswordResetEmail(email).await()
+                emit(Resource.Success("Password reset email sent"))
+            } catch (e: Exception) {
+                emit(Resource.Error(e)) // Emit error
+            }
+        }
+    }
+
     private suspend fun login(
         provider: AuthProvider,
         signInRequest: suspend () -> AuthResult,
@@ -207,6 +219,5 @@ class FirebaseAuthRepositoryImpl(
     }
 
     companion object {
-        private const val TAG = "FirebaseAuthRepositoryI"
     }
 }

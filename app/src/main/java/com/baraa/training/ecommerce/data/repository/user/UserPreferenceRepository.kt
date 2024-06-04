@@ -1,9 +1,12 @@
 package com.baraa.training.ecommerce.data.repository.user
 
+import com.baraa.training.ecommerce.data.models.user.UserDetailsPreferences
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceRepository {
-    suspend fun isUserLoggedIn(): Flow<Boolean>
-    suspend fun saveLoginState(isLoggedIn: Boolean)
-    suspend fun saveUserID(userId: String)
+    fun getUserDetails(): Flow<UserDetailsPreferences>
+    suspend fun updateUserId(userId: String)
+    suspend fun getUserId(): Flow<String>
+    suspend fun clearUserPreferences()
+    suspend fun updateUserDetails(userDetailsPreferences: UserDetailsPreferences)
 }

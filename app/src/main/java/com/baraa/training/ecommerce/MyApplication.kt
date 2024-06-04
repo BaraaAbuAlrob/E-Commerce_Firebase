@@ -14,7 +14,6 @@ class MyApplication : Application() {
         super.onCreate()
         // Initialize Firebase
         listenToNetworkConnectivity()
-
     }
 
     @SuppressLint("CheckResult")

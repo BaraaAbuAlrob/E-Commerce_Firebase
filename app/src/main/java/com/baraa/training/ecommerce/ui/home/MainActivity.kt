@@ -1,48 +1,95 @@
 package com.baraa.training.ecommerce.ui.home
 
-import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
-import android.view.animation.AnticipateInterpolator
-import androidx.core.animation.doOnEnd
+import android.util.Log
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.baraa.training.ecommerce.R
+import com.baraa.training.ecommerce.databinding.ActivityMainBinding
+import com.baraa.training.ecommerce.ui.auth.AuthActivity
+import com.baraa.training.ecommerce.ui.common.viewmodel.UserViewModel
+import com.baraa.training.ecommerce.ui.common.viewmodel.UserViewModelFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
+
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
+    private val userViewModel: UserViewModel by viewModels {
+        UserViewModelFactory(context = this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initSplashScreen()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        val isLoggedIn = runBlocking { userViewModel.isUserLoggedIn().first() }
+        if (!isLoggedIn) {
+            goToAuthActivity()
+            return
+        }
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.logout.setOnClickListener {
+            logOut()
+        }
+
+        initViewModel()
     }
 
-    @SuppressLint("Recycle")
-    private fun initSplashScreen() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-            installSplashScreen()
-            // Add a callback that's called when the splash screen is animating to the app content.
-            splashScreen.setOnExitAnimationListener { splashScreenView ->
-                // Create your custom animation.
-                val slideUp = ObjectAnimator.ofFloat(
-                    splashScreenView, View.TRANSLATION_Y, 0f, -splashScreenView.height.toFloat())
-                slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 1000L
+    private fun initViewModel() {
+        lifecycleScope.launch {
+            val userDetails = runBlocking { userViewModel.getUserDetails().first() }
+            Log.d(TAG, "initViewModel: user details ${userDetails.email}")
 
-                // Call SplashScreenView.remove at the end of your custom animation.
-                slideUp.doOnEnd { splashScreenView.remove() }
-
-                // Run your animation.
-                slideUp.start()
+            userViewModel.userDetailsState.collect {
+                Log.d(TAG, "initViewModel: user details updated ${it?.email}")
             }
+
+        }
+    }
+
+    private fun logOut() {
+        lifecycleScope.launch {
+            userViewModel.logOut()
+            goToAuthActivity()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
+
+    private fun goToAuthActivity() {
+        val intent = Intent(this, AuthActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val options = ActivityOptions.makeCustomAnimation(
+            this, android.R.anim.fade_in, android.R.anim.fade_out
+        )
+        startActivity(intent, options.toBundle())
+        finish()
+    }
+
+    private fun initSplashScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installSplashScreen()
         } else {
             setTheme(R.style.Theme_ECommerce)
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        throw RuntimeException("Test Crush")
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }

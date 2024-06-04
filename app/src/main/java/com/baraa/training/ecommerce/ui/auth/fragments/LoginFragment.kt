@@ -114,6 +114,10 @@ class LoginFragment : Fragment() {
         binding.registerTv.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
+        binding.forgotPasswordTv.setOnClickListener {
+            val forgetPasswordFragment = ForgetPasswordFragment()
+            forgetPasswordFragment.show(parentFragmentManager, "forget-password")
+        }
     }
 
     // ActivityResultLauncher for the sign-in intent

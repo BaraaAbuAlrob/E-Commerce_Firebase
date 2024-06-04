@@ -244,6 +244,11 @@ class RegisterFragment : Fragment() {
         confirmPasswordEditText.addCustomTextWatcher(confirmPasswordLayout)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         private const val TAG = "RegisterFragment"
     }

@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class UserDetailsModel(
     @get:PropertyName("created_at")
     @set:PropertyName("created_at")
-    var createdAt: Double = 0.0,
+    var createdAt: Long = 0,
     var id: String? = null,
     var email: String? = null,
     var name: String? = null,

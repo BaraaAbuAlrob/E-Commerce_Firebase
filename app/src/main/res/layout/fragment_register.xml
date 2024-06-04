@@ -54,7 +54,7 @@
                     style="@style/EditTextStyle"
                     android:drawableStart="@drawable/ic_name"
                     android:hint="@string/name_et_hint"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textPersonName"
                     android:text="@={viewmodel.name}" />
 
             </com.google.android.material.textfield.TextInputLayout>

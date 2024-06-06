@@ -2,19 +2,14 @@ package com.baraa.training.ecommerce.ui.auth.fragments
 
 import android.content.Intent
 import android.graphics.PorterDuff
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -24,7 +19,7 @@ import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
-import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.home.MainActivity
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
@@ -42,32 +37,17 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
     private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
-    private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
-
-    private val loginViewModel: LoginViewModel by viewModels {
+    override val viewModel: LoginViewModel by viewModels {
         LoginViewModelFactory(contextValue = requireContext())
     }
 
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    override fun getLayoutResId(): Int = R.layout.fragment_login
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = loginViewModel
-        // Inflate the layout for this fragment
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun init() {
         changeEditTextStrokeAndStartDrawableColors()
         initListeners()
         initViewModel()
@@ -75,7 +55,7 @@ class LoginFragment : Fragment() {
 
     private fun initViewModel() {
         lifecycleScope.launch {
-            loginViewModel.loginState.collect { resource ->
+            viewModel.loginState.collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         progressDialog.show()
@@ -156,7 +136,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        loginViewModel.loginWithGoogle(idToken)
+        viewModel.loginWithGoogle(idToken)
     }
 
     private fun signOut() {
@@ -197,7 +177,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun firebaseAuthWithFacebook(token: String) {
-        loginViewModel.loginWithFacebook(token)
+        viewModel.loginWithFacebook(token)
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -243,11 +223,6 @@ class LoginFragment : Fragment() {
         // Apply the text watcher to both EditTexts
         emailEditText.addCustomTextWatcher(emailLayout)
         passwordEditText.addCustomTextWatcher(passwordLayout)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

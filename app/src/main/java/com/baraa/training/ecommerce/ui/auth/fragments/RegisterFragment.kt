@@ -1,19 +1,14 @@
 package com.baraa.training.ecommerce.ui.auth.fragments
 
 import android.graphics.PorterDuff
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,7 +18,7 @@ import com.baraa.training.ecommerce.databinding.FragmentRegisterBinding
 import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModel
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModelFactory
-import com.baraa.training.ecommerce.ui.common.views.ProgressDialog
+import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.RegisterException
@@ -41,36 +36,21 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
 
-class RegisterFragment : Fragment() {
+class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel>() {
 
     private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
-    private val progressDialog by lazy { ProgressDialog.createProgressDialog(requireActivity()) }
-
-    private val registerViewModel: RegisterViewModel by viewModels {
+    override val viewModel: RegisterViewModel by viewModels {
         RegisterViewModelFactory(contextValue = requireContext())
     }
 
-    private var _binding: FragmentRegisterBinding? = null
-    private val binding get() = _binding!!
+    override fun getLayoutResId(): Int = R.layout.fragment_register
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewmodel = registerViewModel
-        // Inflate the layout for this fragment
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun init() {
         changeEditTextStrokeAndStartDrawableColors()
-        initViewModel()
         initListeners()
+        initViewModel()
     }
 
     private fun initListeners() {
@@ -122,12 +102,12 @@ class RegisterFragment : Fragment() {
     }
 
     private fun firebaseAuthWithFacebook(token: String) {
-        registerViewModel.registerWithFacebook(token)
+        viewModel.registerWithFacebook(token)
     }
 
     private fun initViewModel() {
         lifecycleScope.launch {
-            registerViewModel.registerState.collect { resource ->
+            viewModel.registerState.collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         progressDialog.show()
@@ -177,7 +157,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        registerViewModel.signUpWithGoogle(idToken)
+        viewModel.signUpWithGoogle(idToken)
     }
 
 
@@ -245,11 +225,6 @@ class RegisterFragment : Fragment() {
         emailEditText.addCustomTextWatcher(emailLayout)
         passwordEditText.addCustomTextWatcher(passwordLayout)
         confirmPasswordEditText.addCustomTextWatcher(confirmPasswordLayout)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.baraa.training.ecommerce.data.repository.auth
 
+import android.util.Log
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -172,6 +173,9 @@ class FirebaseAuthRepositoryImpl(
                 return@flow
             }
 
+            val idTokenRequest = authResult.user?.getIdToken(true)?.await()
+            Log.d(TAG, "login: idTokenRequest = ${idTokenRequest?.token}")
+
             if (authResult.user?.isEmailVerified == false) {
                 authResult.user?.sendEmailVerification()?.await()
                 val msg = "Email not verified, verification email sent to user"
@@ -219,5 +223,6 @@ class FirebaseAuthRepositoryImpl(
     }
 
     companion object {
+        private const val TAG = "FirebaseAuthRepositoryImp"
     }
 }

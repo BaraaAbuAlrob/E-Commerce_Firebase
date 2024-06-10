@@ -173,9 +173,6 @@ class FirebaseAuthRepositoryImpl(
                 return@flow
             }
 
-            val idTokenRequest = authResult.user?.getIdToken(true)?.await()
-            Log.d(TAG, "login: idTokenRequest = ${idTokenRequest?.token}")
-
             if (authResult.user?.isEmailVerified == false) {
                 authResult.user?.sendEmailVerification()?.await()
                 val msg = "Email not verified, verification email sent to user"

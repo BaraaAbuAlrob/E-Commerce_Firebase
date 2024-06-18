@@ -7,7 +7,5 @@ message UserDetailsPreferences {
   string id = 1;
   string email = 2;
   string name = 3;
-  int64 created_at = 4;
-  bool disabled = 5;
-  repeated string reviews = 6;
+  repeated string reviews = 4;
 }

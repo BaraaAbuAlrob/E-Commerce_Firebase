@@ -56,7 +56,7 @@ class FirebaseAuthRepositoryImpl(
 
                 // create user details object
                 val userDetails = UserDetailsModel(
-                    id = userId, name = name, email = email, createdAt = System.currentTimeMillis()
+                    id = userId, name = name, email = email
                 )
                 // save user details to firestore
                 firestore.collection("users").document(userId).set(userDetails).await()
@@ -92,8 +92,7 @@ class FirebaseAuthRepositoryImpl(
                 val userDetails = UserDetailsModel(
                     id = userId,
                     name = authResult.user?.displayName ?: "",
-                    email = authResult.user?.email ?: "",
-                    createdAt = System.currentTimeMillis()
+                    email = authResult.user?.email ?: ""
                 )
                 // save user details to firestore
                 firestore.collection("users").document(userId).set(userDetails).await()
@@ -128,8 +127,7 @@ class FirebaseAuthRepositoryImpl(
                 val userDetails = UserDetailsModel(
                     id = userId,
                     name = authResult.user?.displayName ?: "",
-                    email = authResult.user?.email ?: "",
-                    createdAt = System.currentTimeMillis()
+                    email = authResult.user?.email ?: ""
                 )
                 // save user details to firestore
                 firestore.collection("users").document(userId).set(userDetails).await()

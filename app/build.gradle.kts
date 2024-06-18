@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("com.google.protobuf") version "0.9.4" apply true
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -106,6 +107,12 @@ dependencies {
 
     // third party libraries
     implementation("com.github.pwittchen:reactivenetwork-rx2:3.0.8")
+
+    // Dagger Hilt
+    implementation("com.google.dagger:hilt-android:2.47")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.2.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.47")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
 
     // Navigation components
     val navVersion = "2.7.7"

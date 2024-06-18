@@ -17,7 +17,6 @@ import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentRegisterBinding
 import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModel
-import com.baraa.training.ecommerce.ui.auth.viewmodel.RegisterViewModelFactory
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.showSnakeBarError
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
@@ -34,16 +33,16 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding, RegisterViewModel>() {
 
     private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
-    override val viewModel: RegisterViewModel by viewModels {
-        RegisterViewModelFactory(contextValue = requireContext())
-    }
+    override val viewModel: RegisterViewModel by viewModels ()
 
     override fun getLayoutResId(): Int = R.layout.fragment_register
 

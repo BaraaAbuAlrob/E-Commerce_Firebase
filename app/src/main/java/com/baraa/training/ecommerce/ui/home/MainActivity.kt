@@ -13,19 +13,18 @@ import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.databinding.ActivityMainBinding
 import com.baraa.training.ecommerce.ui.auth.AuthActivity
 import com.baraa.training.ecommerce.ui.common.viewmodel.UserViewModel
-import com.baraa.training.ecommerce.ui.common.viewmodel.UserViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
-    private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory(context = this)
-    }
+    private val userViewModel: UserViewModel by viewModels ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initSplashScreen()

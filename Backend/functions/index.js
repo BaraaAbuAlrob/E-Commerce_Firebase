@@ -42,11 +42,21 @@ exports.registerUser = onRequest(async (req, res) => {
         // const emailVerificationLink = await admin.auth().generateEmailVerificationLink(email);
 
         // Send the UID and email of the newly created user back to the client
-        res.status(201).send({
-            uid: userRecord.uid, email: userRecord.email
-        });
+        res.status(201).send(
+            {
+                code: 201,
+                data: {
+                    uid: userRecord.uid, email: userRecord.email
+                },
+                message: "User Registered successfully."
+            }
+        );
     } catch (error) {
         console.error("Error creating new user:", error);
-        res.status(500).send("Error creating new user: " + error.message);
+        res.status(400).send({
+            code: 400,
+            data: null,
+            message: "Error creating new user: " + error.message
+        });
     }
 });

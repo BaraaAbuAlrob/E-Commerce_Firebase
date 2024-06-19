@@ -32,4 +32,9 @@
     <string name="send">Send</string>
     <string name="log_out">Log Out</string>
     <string name="app_icon">App icon</string>
+    <string name="home">Home</string>
+    <string name="explore">Explore</string>
+    <string name="cart">Cart</string>
+    <string name="offer">Offer</string>
+    <string name="account">Account</string>
 </resources>

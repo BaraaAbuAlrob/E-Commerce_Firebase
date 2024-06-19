@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.logout.setOnClickListener {
-            logOut()
-        }
-
         initViewModel()
     }
 
@@ -54,13 +50,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "initViewModel: user details updated ${it?.email}")
             }
 
-        }
-    }
-
-    private fun logOut() {
-        lifecycleScope.launch {
-            userViewModel.logOut()
-            goToAuthActivity()
         }
     }
 
@@ -86,6 +75,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             setTheme(R.style.Theme_ECommerce)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

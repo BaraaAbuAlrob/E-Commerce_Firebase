@@ -125,6 +125,9 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
 
+    // ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.2")

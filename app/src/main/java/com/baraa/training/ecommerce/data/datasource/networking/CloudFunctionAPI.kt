@@ -23,7 +23,7 @@ interface CloudFunctionAPI {
     ): Response<GenericResponse<RegisterResponseModel>>
 
     companion object {
-        private const val BASE_URL = "https://us-central1-android-e-commerce-training.cloudfunctions.net/"
+        private const val BASE_URL = "https://us-central1-e-commerce-f6265.cloudfunctions.net/"
         private const val TIME_OUT = 60L
         fun create(): CloudFunctionAPI {
             val okHttpClient =

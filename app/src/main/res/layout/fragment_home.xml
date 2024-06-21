@@ -96,11 +96,12 @@
                     android:layout_marginTop="8dp"
                     android:background="@color/neutral_light" />
 
-                <View
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/sale_ads_view_pager"
                     android:layout_width="match_parent"
-                    android:layout_height="1500dp"
-                    android:background="@color/white" />
-
+                    android:layout_height="240dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

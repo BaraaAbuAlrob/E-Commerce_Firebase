@@ -93,7 +93,7 @@ dependencies {
 
 
     // Firebase dependencies
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-firestore-ktx")
@@ -107,6 +107,10 @@ dependencies {
 
     // third party libraries
     implementation("com.github.pwittchen:reactivenetwork-rx2:3.0.8")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.14.2")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

@@ -5,14 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
+import com.baraa.training.ecommerce.ui.common.views.CircleView
 import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -45,13 +46,48 @@ class HomeFragment : Fragment() {
             )
         )
 
+        initializeIndicators(salesAds.size)
         val adapter = SalesAdAdapter(salesAds)
         binding.saleAdsViewPager.adapter = adapter
         binding.saleAdsViewPager.setPageTransformer(DepthPageTransformer())
+        binding.saleAdsViewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                updateIndicators(position)
+            }
+        })
+    }
 
-        lifecycleScope.launch {
-            delay(5000)
-            binding.saleAdsViewPager.currentItem = 1
+    private var indicators = mutableListOf<CircleView>()
+
+    private fun initializeIndicators(count: Int) {
+        for (i in 0 until count) {
+            val circleView = CircleView(requireContext())
+            val params = LinearLayout.LayoutParams(
+                16, 16
+            )
+            params.setMargins(8, 0, 8, 0) // Margin between circles
+            circleView.setLayoutParams(params)
+            circleView.setRadius(8f) // Set radius
+            circleView.setColor(
+                if (i == 0)
+                    requireContext().getColor(R.color.primary_color)
+                else
+                    requireContext().getColor(R.color.neutral_grey)
+            ) // First indicator is red
+            indicators.add(circleView)
+            binding.indicatorView.addView(circleView)
+        }
+    }
+
+    private fun updateIndicators(position: Int) {
+        for (i in 0 until indicators.size) {
+            indicators[i].setColor(
+                if (i == position)
+                    requireContext().getColor(R.color.primary_color)
+                else
+                    requireContext().getColor(R.color.neutral_grey)
+            )
         }
     }
 

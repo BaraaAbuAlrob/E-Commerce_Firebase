@@ -2,6 +2,7 @@ package com.baraa.training.ecommerce.data.models.sale_ads
 
 import android.os.Parcelable
 import androidx.annotation.Keep
+import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.parcelize.Parcelize
@@ -35,8 +36,8 @@ data class SalesAdModel(
     @set:PropertyName("end_at")
     var endAt: Date? = null
 ): Parcelable {
-    fun toUIModel(): SalesAdModel {
-        return SalesAdModel(
+    fun toUIModel(): SalesAdUIModel {
+        return SalesAdUIModel(
             title = this.title,
             description = this.description,
             imageUrl = this.imageUrl,

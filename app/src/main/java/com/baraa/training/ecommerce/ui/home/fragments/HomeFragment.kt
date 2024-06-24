@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.baraa.training.ecommerce.R
+import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.common.views.CircleView
@@ -28,36 +29,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun getLayoutResId(): Int = R.layout.fragment_home
 
     override fun init() {
-        initViews()
         iniViewModel()
     }
 
     private fun iniViewModel() {
         lifecycleScope.launch {
-            viewModel.salesAdsStateTemp.collect {
-                Log.d(TAG, "iniViewModel: $it")
+            viewModel.salesAdsStateTemp.collect { resources ->
+                when (resources) {
+                    is Resource.Loading -> {
+                        Log.d(TAG, "iniViewModel: Loading")
+                    }
+                    is Resource.Success -> {
+                        initSalesAdsView(resources.data)
+                    }
+                    is Resource.Error -> {
+                        Log.d(TAG, "iniViewModel: Error")
+                    }
+                }
             }
         }
     }
 
-    private fun initViews() {
-        Log.d(TAG, "onViewCreated: HomeFragment")
-
-        initSalesAdsView()
-    }
-
-    private fun initSalesAdsView() {
-        val salesAds = listOf(
-            SalesAdUIModel(
-                title = "Super Flash Sale",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/android-e-commerce-training.appspot.com/o/temps%2Fbig-sale-megaphone-banner-isolated-on-white-background-vector-sale-banner-discount-offer-market-advertising-illustration-2BNBMX2.jpg?alt=media&token=62fa2e9c-e40b-4e13-b0cc-76435e4e1c54",
-                endAt = System.currentTimeMillis() + 3600000 // 1 hour from now
-            ), SalesAdUIModel(
-                title = "Limited Offer",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/android-e-commerce-training.appspot.com/o/temps%2FPromotion%20Image.png?alt=media&token=ae502706-b8f2-4e02-894f-6887d082d08a",
-                endAt = System.currentTimeMillis() + 7200000 // 2 hours from now
-            )
-        )
+    private fun initSalesAdsView(salesAds: List<SalesAdUIModel>?) {
+        if (salesAds.isNullOrEmpty()) {
+            return
+        }
 
         initializeIndicators(salesAds.size)
         val adapter = SalesAdAdapter(salesAds)

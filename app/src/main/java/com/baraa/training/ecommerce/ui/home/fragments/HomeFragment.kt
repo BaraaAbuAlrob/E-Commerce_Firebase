@@ -1,39 +1,52 @@
 package com.baraa.training.ecommerce.ui.home.fragments
 
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
+import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.common.views.CircleView
 import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
+import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
-    private var _binding: FragmentHomeBinding? = null
-    val binding get() = _binding!!
+    override val viewModel: HomeViewModel by viewModels()
+    override fun getLayoutResId(): Int = R.layout.fragment_home
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        // Inflate the layout for this fragment
-        return binding.root
+    override fun init() {
+        initViews()
+        iniViewModel()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun iniViewModel() {
+        lifecycleScope.launch {
+            viewModel.salesAdsStateTemp.collect {
+                Log.d(TAG, "iniViewModel: $it")
+            }
+        }
+    }
 
+    private fun initViews() {
         Log.d(TAG, "onViewCreated: HomeFragment")
 
+        initSalesAdsView()
+    }
+
+    private fun initSalesAdsView() {
         val salesAds = listOf(
             SalesAdUIModel(
                 title = "Super Flash Sale",
@@ -50,12 +63,30 @@ class HomeFragment : Fragment() {
         val adapter = SalesAdAdapter(salesAds)
         binding.saleAdsViewPager.adapter = adapter
         binding.saleAdsViewPager.setPageTransformer(DepthPageTransformer())
-        binding.saleAdsViewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+        binding.saleAdsViewPager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 updateIndicators(position)
             }
         })
+
+        lifecycleScope.launch(IO) {
+            tickerFlow(5000).collect {
+                withContext(Main) {
+                    binding.saleAdsViewPager.setCurrentItem(
+                        (binding.saleAdsViewPager.currentItem + 1) % salesAds.size, true
+                    )
+                }
+            }
+        }
+    }
+
+    private fun tickerFlow(period: Long) = flow {
+        while (true) {
+            emit(Unit)
+            delay(period)
+        }
     }
 
     private var indicators = mutableListOf<CircleView>()
@@ -70,11 +101,13 @@ class HomeFragment : Fragment() {
             circleView.setLayoutParams(params)
             circleView.setRadius(8f) // Set radius
             circleView.setColor(
-                if (i == 0)
-                    requireContext().getColor(R.color.primary_color)
-                else
-                    requireContext().getColor(R.color.neutral_grey)
+                if (i == 0) requireContext().getColor(R.color.primary_color) else requireContext().getColor(
+                    R.color.neutral_grey
+                )
             ) // First indicator is red
+            circleView.setOnClickListener {
+                binding.saleAdsViewPager.setCurrentItem(i, true)
+            }
             indicators.add(circleView)
             binding.indicatorView.addView(circleView)
         }
@@ -83,10 +116,9 @@ class HomeFragment : Fragment() {
     private fun updateIndicators(position: Int) {
         for (i in 0 until indicators.size) {
             indicators[i].setColor(
-                if (i == position)
-                    requireContext().getColor(R.color.primary_color)
-                else
-                    requireContext().getColor(R.color.neutral_grey)
+                if (i == position) requireContext().getColor(R.color.primary_color) else requireContext().getColor(
+                    R.color.neutral_grey
+                )
             )
         }
     }

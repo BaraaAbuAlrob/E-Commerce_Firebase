@@ -4,6 +4,7 @@ import android.util.Log
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.models.sale_ads.SalesAdModel
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -16,9 +17,11 @@ class SalesAdsRepositoryImpl @Inject constructor(
             Log.d(TAG, "getSalesAds: ")
             emit(Resource.Loading())
             val salesAds = firestore.collection("sales_ads")
-                    .get().await().toObjects(SalesAdModel::class.java)
+                    .get().await().toObjects(SalesAdModel::class.java) // Here the Exception occurs.
+            Log.d(TAG, "getSalesAds: Success")
             emit(Resource.Success(salesAds.map { it.toUIModel() }))
         } catch (e: Exception) {
+            Log.d(TAG, "getSalesAds: Error")
             emit(Resource.Error(e))
         }
     }

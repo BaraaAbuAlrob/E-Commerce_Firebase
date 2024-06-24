@@ -1,6 +1,7 @@
 package com.baraa.training.ecommerce.ui.home.fragments
 
 import android.util.Log
+import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,10 +41,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                         Log.d(TAG, "iniViewModel: Loading")
                     }
                     is Resource.Success -> {
+                        Log.d(TAG, "iniViewModel: Loading")
+                        binding.saleAdsShimmerView.root.stopShimmer()
+                        binding.saleAdsShimmerView.root.visibility = View.GONE
                         initSalesAdsView(resources.data)
+                        Log.d(TAG, "iniViewModel: after stop")
                     }
                     is Resource.Error -> {
                         Log.d(TAG, "iniViewModel: Error")
+                        initSalesAdsView(resources.data)
                     }
                 }
             }
@@ -52,8 +58,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private fun initSalesAdsView(salesAds: List<SalesAdUIModel>?) {
         if (salesAds.isNullOrEmpty()) {
+
+            Log.d(TAG, "isNullOrEmpty")
             return
         }
+
+        Log.d(TAG, "initializeIndicators")
 
         initializeIndicators(salesAds.size)
         val adapter = SalesAdAdapter(salesAds)

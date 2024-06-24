@@ -41,15 +41,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                         Log.d(TAG, "iniViewModel: Loading")
                     }
                     is Resource.Success -> {
-                        Log.d(TAG, "iniViewModel: Loading")
                         binding.saleAdsShimmerView.root.stopShimmer()
                         binding.saleAdsShimmerView.root.visibility = View.GONE
                         initSalesAdsView(resources.data)
-                        Log.d(TAG, "iniViewModel: after stop")
                     }
                     is Resource.Error -> {
                         Log.d(TAG, "iniViewModel: Error")
-                        initSalesAdsView(resources.data)
                     }
                 }
             }
@@ -58,12 +55,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private fun initSalesAdsView(salesAds: List<SalesAdUIModel>?) {
         if (salesAds.isNullOrEmpty()) {
-
-            Log.d(TAG, "isNullOrEmpty")
             return
         }
-
-        Log.d(TAG, "initializeIndicators")
 
         initializeIndicators(salesAds.size)
         val adapter = SalesAdAdapter(salesAds)
@@ -78,7 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         })
 
         lifecycleScope.launch(IO) {
-            tickerFlow(5000).collect {
+            tickerFlow(10000).collect {
                 withContext(Main) {
                     binding.saleAdsViewPager.setCurrentItem(
                         (binding.saleAdsViewPager.currentItem + 1) % salesAds.size, true

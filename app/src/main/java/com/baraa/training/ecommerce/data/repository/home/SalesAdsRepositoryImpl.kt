@@ -14,14 +14,14 @@ class SalesAdsRepositoryImpl @Inject constructor(
 ) : SalesAdsRepository {
     override  fun getSalesAds() = flow {
         try {
-            Log.d(TAG, "getSalesAds: ")
+            Log.d(TAG, "getSalesAds: while loading...")
             emit(Resource.Loading())
             val salesAds = firestore.collection("sales_ads")
-                    .get().await().toObjects(SalesAdModel::class.java) // Here the Exception occurs.
-            Log.d(TAG, "getSalesAds: Success")
+                    .get().await().toObjects(SalesAdModel::class.java)
+            Log.d(TAG, "Success")
             emit(Resource.Success(salesAds.map { it.toUIModel() }))
         } catch (e: Exception) {
-            Log.d(TAG, "getSalesAds: Error")
+            Log.d(TAG, "Error, the exception message is:   ${e.message}")
             emit(Resource.Error(e))
         }
     }

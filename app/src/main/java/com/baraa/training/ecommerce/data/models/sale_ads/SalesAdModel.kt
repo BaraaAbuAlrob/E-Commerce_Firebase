@@ -11,6 +11,7 @@ import java.util.Date
 @Keep
 @Parcelize
 data class SalesAdModel(
+    val id: String? = null,
     val title: String? = null,
     val description: String? = null,
 

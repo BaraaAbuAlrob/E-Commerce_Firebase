@@ -11,7 +11,7 @@ class CountdownTimer(
 
     private val job = Job()
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = Dispatchers.Default + job
 
     private var timerJob: Job? = null
 
@@ -36,10 +36,7 @@ class CountdownTimer(
     }
 
     fun stop() {
-        timerJob?.cancel()
-    }
-
-    fun cancel() {
         job.cancel()
+        timerJob?.cancel()
     }
 }

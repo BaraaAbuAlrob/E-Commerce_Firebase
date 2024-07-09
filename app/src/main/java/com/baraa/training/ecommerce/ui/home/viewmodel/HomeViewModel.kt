@@ -19,4 +19,12 @@ class HomeViewModel @Inject constructor(
     val salesAdsStateTemp = salesAdsRepository.getSalesAds().stateIn(
         viewModelScope + IO, started = SharingStarted.Eagerly, initialValue = Resource.Loading()
     )
+
+    fun stopTimer() {
+        salesAdsStateTemp.value.data?.forEach { it.stopCountdown() }
+    }
+
+    fun startTimer() {
+        salesAdsStateTemp.value.data?.forEach { it.startCountdown() }
+    }
 }

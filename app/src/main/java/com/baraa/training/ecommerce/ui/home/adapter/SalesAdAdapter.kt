@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.baraa.training.ecommerce.databinding.ItemSalesAdBinding
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
-import com.baraa.training.ecommerce.utils.CountdownTimer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

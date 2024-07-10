@@ -23,7 +23,7 @@ fun loadImage(view: ImageView, imageUrl: String?) {
         .into(view)
 }
 
-private fun getGlideCircleLoading(view: ImageView): CircularProgressDrawable {
+fun getGlideCircleLoading(view: ImageView): CircularProgressDrawable {
     return CircularProgressDrawable(view.context).apply {
         strokeWidth = 5f
         centerRadius = 30f

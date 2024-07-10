@@ -5,13 +5,16 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.baraa.training.ecommerce.R
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.common.views.CircleView
+import com.baraa.training.ecommerce.ui.home.adapter.CategoriesAdapter
 import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
+import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
@@ -30,27 +33,70 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun getLayoutResId(): Int = R.layout.fragment_home
 
     override fun init() {
+        initViews()
         iniViewModel()
     }
 
     private fun iniViewModel() {
         lifecycleScope.launch {
-            viewModel.salesAdsStateTemp.collect { resources ->
+            viewModel.salesAdsState.collect { resources ->
                 when (resources) {
                     is Resource.Loading -> {
                         Log.d(TAG, "iniViewModel: Loading")
                     }
+
                     is Resource.Success -> {
                         binding.saleAdsShimmerView.root.stopShimmer()
                         binding.saleAdsShimmerView.root.visibility = View.GONE
                         initSalesAdsView(resources.data)
                     }
+
                     is Resource.Error -> {
                         Log.d(TAG, "iniViewModel: Error")
                     }
                 }
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.categoriesState.collect { resources ->
+                when (resources) {
+                    is Resource.Loading -> {
+                        Log.d(TAG, "iniViewModel: categories Loading")
+                    }
+
+                    is Resource.Success -> {
+//                        binding.categoriesShimmerView.root.stopShimmer()
+//                        binding.categoriesShimmerView.root.visibility = View.GONE
+                        Log.d(TAG, "iniViewModel: categories Success = ${resources.data}")
+                        initCategoriesView(resources.data)
+                    }
+
+                    is Resource.Error -> {
+                        Log.d(TAG, "iniViewModel: categories Error")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun initCategoriesView(data: List<CategoryUIModel>?) {
+        if (data.isNullOrEmpty()) {
+            return
+        }
+        val categoriesAdapter = CategoriesAdapter(data)
+        binding.categoriesRecyclerView.apply {
+            adapter = categoriesAdapter
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+        }
+    }
+
+    private fun initViews() {
+        Log.d(TAG, "onViewCreated: HomeFragment")
     }
 
     private fun initSalesAdsView(salesAds: List<SalesAdUIModel>?) {
@@ -59,16 +105,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         initializeIndicators(salesAds.size)
-        val adapter = SalesAdAdapter(lifecycleScope, salesAds)
-        binding.saleAdsViewPager.adapter = adapter
-        binding.saleAdsViewPager.setPageTransformer(DepthPageTransformer())
-        binding.saleAdsViewPager.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                updateIndicators(position)
-            }
-        })
+        val salesAdapter = SalesAdAdapter(lifecycleScope, salesAds)
+        binding.saleAdsViewPager.apply {
+            adapter = salesAdapter
+            setPageTransformer(DepthPageTransformer())
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    updateIndicators(position)
+                }
+            })
+        }
 
         lifecycleScope.launch(IO) {
             tickerFlow(10000).collect {
@@ -133,6 +180,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         super.onResume()
         viewModel.startTimer()
     }
+
     override fun onPause() {
         super.onPause()
         viewModel.stopTimer()

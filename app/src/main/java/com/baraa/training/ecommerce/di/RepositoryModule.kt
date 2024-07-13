@@ -8,6 +8,8 @@ import com.baraa.training.ecommerce.data.repository.common.AppDataStoreRepositor
 import com.baraa.training.ecommerce.data.repository.common.AppPreferenceRepository
 import com.baraa.training.ecommerce.data.repository.home.SalesAdsRepository
 import com.baraa.training.ecommerce.data.repository.home.SalesAdsRepositoryImpl
+import com.baraa.training.ecommerce.data.repository.product.ProductsRepository
+import com.baraa.training.ecommerce.data.repository.product.ProductsRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.user.UserFirestoreRepository
 import com.baraa.training.ecommerce.data.repository.user.UserFirestoreRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepository
@@ -57,4 +59,10 @@ abstract class RepositoryModule {
     abstract fun provideCategoriesRepository(
         categoriesRepositoryImpl: CategoriesRepositoryImpl
     ): CategoriesRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideProductsRepository(
+        productsRepositoryImpl: ProductsRepositoryImpl
+    ): ProductsRepository
 }

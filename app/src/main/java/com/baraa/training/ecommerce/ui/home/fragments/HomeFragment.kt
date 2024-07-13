@@ -80,6 +80,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
         }
+
+        viewModel.getFlashSaleProducts()
     }
 
     private fun initCategoriesView(data: List<CategoryUIModel>?) {

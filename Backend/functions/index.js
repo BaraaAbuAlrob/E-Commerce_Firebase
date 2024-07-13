@@ -7,7 +7,7 @@ exports.hellowWorld = onRequest((req, res) => {
     res.status(401).send("Un Authorized");
 });
 
-const GenericResponse = require('./generic-response.js');
+const GenericResponse = require('./generic-response');
 
 exports.registerUser = onRequest(async (req, res) => {
     // Check for POST request

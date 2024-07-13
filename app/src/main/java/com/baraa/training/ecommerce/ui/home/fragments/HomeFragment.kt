@@ -35,6 +35,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun init() {
         initViews()
         iniViewModel()
+
+//        binding.searchTv.paintFlags = binding.searchTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG;
     }
 
     private fun iniViewModel() {

@@ -3,8 +3,8 @@ package com.baraa.training.ecommerce.data.repository.home
 import android.util.Log
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.models.sale_ads.SalesAdModel
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -28,5 +28,16 @@ class SalesAdsRepositoryImpl @Inject constructor(
 
     companion object {
         private const val TAG = "SalesAdsRepositoryImpl"
+    }
+
+    suspend fun getPagingSales(){
+        val salesAds =  firestore.collection("sales_ads").limit(10).get().await()
+        val lstDocument = salesAds.documents.last()
+
+        getNextPage(lstDocument)
+    }
+
+    private suspend fun getNextPage(lastDocument: DocumentSnapshot){
+        val salesAds =  firestore.collection("sales_ads").startAfter(lastDocument).limit(10).get().await()
     }
 }

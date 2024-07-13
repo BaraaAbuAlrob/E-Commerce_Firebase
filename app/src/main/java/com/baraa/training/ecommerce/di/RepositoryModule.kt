@@ -1,5 +1,7 @@
 package com.baraa.training.ecommerce.di
 
+import com.baraa.training.ecommerce.data.repository.auth.CountryRepository
+import com.baraa.training.ecommerce.data.repository.auth.CountryRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepository
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.categories.CategoriesRepository
@@ -65,4 +67,10 @@ abstract class RepositoryModule {
     abstract fun provideProductsRepository(
         productsRepositoryImpl: ProductsRepositoryImpl
     ): ProductsRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideCountryRepositoryImpl(
+        countryRepositoryImpl: CountryRepositoryImpl
+    ): CountryRepository
 }

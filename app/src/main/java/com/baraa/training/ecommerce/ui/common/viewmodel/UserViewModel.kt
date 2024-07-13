@@ -35,7 +35,7 @@ class UserViewModel @Inject constructor(
 
     private val logoutState = MutableSharedFlow<Resource<Unit>>()
 
-    // load user data in state flow inside view model  scope
+    // load user data in state flow inside view models  scope
     val userDetailsState = getUserDetails().stateIn(
         viewModelScope, started = SharingStarted.Eagerly, initialValue = null
     )
@@ -66,7 +66,7 @@ class UserViewModel @Inject constructor(
                 is Resource.Success -> {
 
                     resource.data?.let {
-                        userPreferencesRepository.updateUserDetails(it.toUserDetailsPreferences())
+//                        userPreferencesRepository.updateUserDetails(it.toUserDetailsPreferences()
                     }
                 }
 

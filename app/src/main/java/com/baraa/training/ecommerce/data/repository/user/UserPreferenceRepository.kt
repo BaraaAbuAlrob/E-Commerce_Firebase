@@ -1,6 +1,8 @@
 package com.baraa.training.ecommerce.data.repository.user
 
+import com.baraa.training.ecommerce.data.models.user.CountryData
 import com.baraa.training.ecommerce.data.models.user.UserDetailsPreferences
+import com.baraa.training.ecommerce.ui.auth.models.CountryUIModel
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferenceRepository {
@@ -9,4 +11,6 @@ interface UserPreferenceRepository {
     suspend fun getUserId(): Flow<String>
     suspend fun clearUserPreferences()
     suspend fun updateUserDetails(userDetailsPreferences: UserDetailsPreferences)
+    suspend fun saveUserCountry(country: CountryUIModel)
+    suspend fun getUserCountry():  Flow<CountryData>
 }

@@ -50,6 +50,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         changeEditTextStrokeAndStartDrawableColors()
         initListeners()
         initViewModel()
+
+        val countryFragment = CountriesFragment()
+        countryFragment.isCancelable = false
+        countryFragment.show(parentFragmentManager, "country-fragment")
     }
 
     private fun initViewModel() {

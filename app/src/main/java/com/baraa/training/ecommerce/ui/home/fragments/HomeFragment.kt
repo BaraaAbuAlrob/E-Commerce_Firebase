@@ -17,6 +17,7 @@ import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
 import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
+import com.baraa.training.ecommerce.ui.product.adapter.ProductAdapter
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
@@ -35,8 +36,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun init() {
         initViews()
         iniViewModel()
-
-//        binding.searchTv.paintFlags = binding.searchTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG;
     }
 
     private fun iniViewModel() {
@@ -81,7 +80,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             }
         }
 
-        viewModel.getFlashSaleProducts()
+//        viewModel.getFlashSaleProducts()
+
+        lifecycleScope.launch {
+            viewModel.flashSaleState.collect { productsList ->
+                if (productsList.isNotEmpty()) {
+                    Log.d(TAG, "iniViewModel: flashSaleState = ${productsList.size}")
+                    flashSaleAdapter.submitList(productsList)
+                }
+            }
+        }
     }
 
     private fun initCategoriesView(data: List<CategoryUIModel>?) {
@@ -99,8 +107,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
+    private val flashSaleAdapter by lazy { ProductAdapter() }
     private fun initViews() {
-        Log.d(TAG, "onViewCreated: HomeFragment")
+        binding.flashSaleProductsRv.apply {
+            adapter = flashSaleAdapter
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+        }
     }
 
     private fun initSalesAdsView(salesAds: List<SalesAdUIModel>?) {

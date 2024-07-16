@@ -7,6 +7,7 @@ data class ProductUIModel(
     val categoriesIDs: List<String>,
     val images: List<String>,
     val price: Int,
+    val rate: Float,
     val priceAfterSale: Int? = null,
     val salePercentage: Int?,
     val saleType: String?,
@@ -39,6 +40,7 @@ data class ProductUIModel(
         result = 31 * result + categoriesIDs.hashCode()
         result = 31 * result + images.hashCode()
         result = 31 * result + price
+        result = 31 * result + rate.hashCode()
         result = 31 * result + (salePercentage ?: 0)
         result = 31 * result + (saleType?.hashCode() ?: 0)
         result = 31 * result + colors.hashCode()
@@ -57,6 +59,7 @@ data class ProductUIModel(
         if (categoriesIDs != other.categoriesIDs) return false
         if (images != other.images) return false
         if (price != other.price) return false
+        if (rate != other.rate) return false
         if (salePercentage != other.salePercentage) return false
         if (saleType != other.saleType) return false
         if (colors != other.colors) return false

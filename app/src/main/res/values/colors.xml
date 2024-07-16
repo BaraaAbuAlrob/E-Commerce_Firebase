@@ -8,4 +8,5 @@
     <color name="neutral_light">#EBF0FF</color>
     <color name="red">#FF0000</color>
     <color name="primary_red">#FB7181</color>
+    <color name="primary_yellow">#FFC833</color>
 </resources>

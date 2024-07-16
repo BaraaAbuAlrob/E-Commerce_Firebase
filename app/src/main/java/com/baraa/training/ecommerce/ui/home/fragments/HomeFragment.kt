@@ -3,6 +3,7 @@ package com.baraa.training.ecommerce.ui.home.fragments
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +13,12 @@ import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.common.views.CircleView
+import com.baraa.training.ecommerce.ui.common.views.loadImage
 import com.baraa.training.ecommerce.ui.home.adapter.CategoriesAdapter
 import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
 import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
+import com.baraa.training.ecommerce.ui.home.model.SpecialSectionUIModel
 import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
 import com.baraa.training.ecommerce.ui.product.adapter.ProductAdapter
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
@@ -24,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,6 +99,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 megaSaleAdapter.submitList(productsList)
                 binding.invalidateAll()
             }
+        }
+
+        lifecycleScope.launch {
+            viewModel.recommendedSectionDataState.collectLatest { recommendedSectionData ->
+                Log.d(TAG, "Recommended section data: $recommendedSectionData")
+                recommendedSectionData?.let {
+                    setupRecommendedViewData(it)
+                } ?: run {
+                    Log.d(TAG, "Recommended section data is null")
+//                    binding.recommendedProductLayout.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun setupRecommendedViewData(sectionData: SpecialSectionUIModel) {
+        loadImage(binding.recommendedProductIv, sectionData.image)
+        binding.recommendedProductTitleIv.text = sectionData.title
+        binding.recommendedProductDescriptionIv.text = sectionData.description
+        binding.recommendedProductLayout.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Recommended Product Clicked, goto ${sectionData.type}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

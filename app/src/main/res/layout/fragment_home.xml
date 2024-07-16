@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -161,7 +162,6 @@
 
 
                 <LinearLayout
-                    android:tag="flash_sale_layout"
                     android:id="@+id/flash_sale_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,7 +170,8 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="8dp"
-                    android:visibilities="@{viewmodel.isEmptyFlashSale}" >
+                    android:tag="flash_sale_layout"
+                    android:visibilities="@{viewmodel.isEmptyFlashSale}">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TitleTextStyle"
@@ -188,16 +189,15 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:tag="flash_sale_rv"
                     android:id="@+id/flash_sale_products_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     android:paddingStart="8dp"
+                    android:tag="flash_sale_rv"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
                 <LinearLayout
-                    android:tag="mega_sale_layout"
                     android:id="@+id/mega_sale_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -206,7 +206,8 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="8dp"
-                    android:visibilities="@{viewmodel.isEmptyMegaSale}" >
+                    android:tag="mega_sale_layout"
+                    android:visibilities="@{viewmodel.isEmptyMegaSale}">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TitleTextStyle"
@@ -224,13 +225,52 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:tag="mega_sale_rv"
                     android:id="@+id/mega_sale_products_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     android:paddingStart="8dp"
+                    android:tag="mega_sale_rv"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+                <RelativeLayout
+                    android:id="@+id/recommended_product_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:padding="8dp"
+                    android:visibilities="@{viewmodel.isRecommendedSection}">
+
+                    <ImageView
+                        android:id="@+id/recommended_product_iv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/promo_image" />
+
+                    <TextView
+                        android:id="@+id/recommended_product_title_iv"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="18dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@android:color/white"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        tools:text="Recommended Product" />
+
+                    <TextView
+                        android:id="@+id/recommended_product_description_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="18dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="We recommend the best for you" />
+                </RelativeLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

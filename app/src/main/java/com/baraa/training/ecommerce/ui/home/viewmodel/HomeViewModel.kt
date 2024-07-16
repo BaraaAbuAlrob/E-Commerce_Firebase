@@ -14,8 +14,10 @@ import com.baraa.training.ecommerce.data.models.user.CountryData
 import com.baraa.training.ecommerce.data.repository.categories.CategoriesRepository
 import com.baraa.training.ecommerce.data.repository.home.SalesAdsRepository
 import com.baraa.training.ecommerce.data.repository.product.ProductsRepository
+import com.baraa.training.ecommerce.data.repository.special_sections.SpecialSectionsRepository
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepository
 import com.baraa.training.ecommerce.domain.models.toProductUIModel
+import com.baraa.training.ecommerce.domain.models.toSpecialSectionUIModel
 import com.baraa.training.ecommerce.ui.products.model.ProductUIModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
@@ -36,7 +38,8 @@ class HomeViewModel @Inject constructor(
     private val salesAdsRepository: SalesAdsRepository,
     private val categoriesRepository: CategoriesRepository,
     private val productsRepository: ProductsRepository,
-    private val userPreferenceRepository: UserPreferenceRepository
+    private val userPreferenceRepository: UserPreferenceRepository,
+    private val specialSectionsRepository: SpecialSectionsRepository
 ) : ViewModel() {
 
     val salesAdsState = salesAdsRepository.getSalesAds().stateIn(
@@ -57,17 +60,16 @@ class HomeViewModel @Inject constructor(
 
     val megaSaleState = getProductsSales(ProductSaleType.MEGA_SALE)
 
-    val isEmptyFlashSale: LiveData<Boolean> = flashSaleState.map {
-        val isEmpty = it.isEmpty()
-        Log.d(TAG, "isEmptyFlashSale: $isEmpty")
-        isEmpty
-    }.asLiveData()
+    val isEmptyFlashSale: LiveData<Boolean> = flashSaleState.map { it.isEmpty() }.asLiveData()
 
-    val isEmptyMegaSale: LiveData<Boolean> = megaSaleState.map {
-        val isEmpty = it.isEmpty()
-        Log.d(TAG, "isEmptyMegaSale: $isEmpty")
-        isEmpty
-    }.asLiveData()
+    val isEmptyMegaSale: LiveData<Boolean> = megaSaleState.map { it.isEmpty() }.asLiveData()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val recommendedSectionDataState = specialSectionsRepository.recommendProductsSection().stateIn(
+        viewModelScope + IO, started = SharingStarted.Eagerly, initialValue = null
+    ).mapLatest { it?.toSpecialSectionUIModel()}
+
+    val isRecommendedSection = recommendedSectionDataState.map { it == null }.asLiveData()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getProductsSales(productSaleType: ProductSaleType): StateFlow<List<ProductUIModel>> =
@@ -105,9 +107,4 @@ class HomeViewModel @Inject constructor(
     companion object {
         private const val TAG = "HomeViewModel"
     }
-}
-
-@BindingAdapter("android:visibilities")
-fun setVisibility(view: View, isEmpty: Boolean) {
-    view.visibility = if (isEmpty) View.GONE else View.VISIBLE
 }

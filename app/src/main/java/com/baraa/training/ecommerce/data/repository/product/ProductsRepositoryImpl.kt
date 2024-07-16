@@ -28,6 +28,7 @@ class ProductsRepositoryImpl @Inject constructor(
             Log.d("ProductsRepositoryImpl", "getSaleProducts: $countryID, $saleType")
             val products = firestore.collection("products")
                 .whereEqualTo("sale_type", saleType)
+                .whereEqualTo("country_id", countryID)
                 .orderBy("price")
                 .limit(pageLimit.toLong()).get().await().toObjects(ProductModel::class.java)
             emit(products)

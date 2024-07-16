@@ -19,6 +19,7 @@ import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
 import com.baraa.training.ecommerce.ui.product.adapter.ProductAdapter
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
+import com.baraa.training.ecommerce.utils.HorizontalSpaceItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -123,6 +124,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             layoutManager = LinearLayoutManager(
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
+            addItemDecoration(HorizontalSpaceItemDecoration(16))
         }
 
         binding.megaSaleProductsRv.apply {
@@ -130,6 +132,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             layoutManager = LinearLayoutManager(
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )
+            addItemDecoration(HorizontalSpaceItemDecoration(16))
         }
     }
 

@@ -1,7 +1,11 @@
 package com.baraa.training.ecommerce.ui.home.viewmodel
 
 import android.util.Log
+import android.view.View
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.models.products.ProductModel
@@ -17,8 +21,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,13 +53,30 @@ class HomeViewModel @Inject constructor(
         initialValue = CountryData.getDefaultInstance()
     )
 
+    val flashSaleState = getProductsSales(ProductSaleType.FLASH_SALE)
+
+    val megaSaleState = getProductsSales(ProductSaleType.MEGA_SALE)
+
+    val isEmptyFlashSale: LiveData<Boolean> = flashSaleState.map {
+        val isEmpty = it.isEmpty()
+        Log.d(TAG, "isEmptyFlashSale: $isEmpty")
+        isEmpty
+    }.asLiveData()
+
+    val isEmptyMegaSale: LiveData<Boolean> = megaSaleState.map {
+        val isEmpty = it.isEmpty()
+        Log.d(TAG, "isEmptyMegaSale: $isEmpty")
+        isEmpty
+    }.asLiveData()
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val flashSaleState = countryState.mapLatest {
-        Log.d(TAG, "CountryId for flash sale: ${it.id}")
-        productsRepository.getSaleProducts(it.id ?: "0", ProductSaleType.FLASH_SALE.type, 10)
-    }.mapLatest { it.first().map { getProductModel(it) } }.stateIn(
-        scope = viewModelScope + IO, started = SharingStarted.Eagerly, initialValue = emptyList()
-    )
+    private fun getProductsSales(productSaleType: ProductSaleType): StateFlow<List<ProductUIModel>> =
+        countryState.mapLatest {
+            Log.d(TAG, "CountryId for flash sale: ${it.id}")
+            productsRepository.getSaleProducts(it.id ?: "0", productSaleType.type, 10)
+        }.mapLatest { it.first().map { product -> getProductModel(product) } }.stateIn(
+            viewModelScope + IO, started = SharingStarted.Eagerly, initialValue = emptyList()
+        )
 
     private fun getProductModel(product: ProductModel): ProductUIModel {
         val productUIModel = product.toProductUIModel().copy(
@@ -82,4 +105,9 @@ class HomeViewModel @Inject constructor(
     companion object {
         private const val TAG = "HomeViewModel"
     }
+}
+
+@BindingAdapter("android:visibilities")
+fun setVisibility(view: View, isEmpty: Boolean) {
+    view.visibility = if (isEmpty) View.GONE else View.VISIBLE
 }

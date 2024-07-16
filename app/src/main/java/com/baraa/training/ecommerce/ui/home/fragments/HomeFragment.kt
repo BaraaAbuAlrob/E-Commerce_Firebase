@@ -84,10 +84,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         lifecycleScope.launch {
             viewModel.flashSaleState.collect { productsList ->
-                if (productsList.isNotEmpty()) {
-                    Log.d(TAG, "iniViewModel: flashSaleState = ${productsList.size}")
-                    flashSaleAdapter.submitList(productsList)
-                }
+                flashSaleAdapter.submitList(productsList)
+                binding.invalidateAll()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.megaSaleState.collect { productsList ->
+                megaSaleAdapter.submitList(productsList)
+                binding.invalidateAll()
             }
         }
     }
@@ -108,11 +113,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private val flashSaleAdapter by lazy { ProductAdapter() }
+    private val megaSaleAdapter by lazy { ProductAdapter() }
+
     private fun initViews() {
         binding.flashSaleProductsRv.apply {
             adapter = flashSaleAdapter
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false
+            )
+        }
+
+        binding.megaSaleProductsRv.apply {
+            adapter = megaSaleAdapter
             layoutManager = LinearLayoutManager(
                 requireContext(), LinearLayoutManager.HORIZONTAL, false
             )

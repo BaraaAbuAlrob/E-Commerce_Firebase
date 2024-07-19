@@ -1,9 +1,16 @@
 package com.baraa.training.ecommerce.ui.products.model
 
+import android.os.Parcelable
+import androidx.annotation.Keep
+import com.baraa.training.ecommerce.data.models.products.ProductSizeModel
+import kotlinx.parcelize.Parcelize
+
 data class ProductUIModel(
     val id: String,
     val name: String,
     val description: String,
+    val colors: List<ProductColorUIModel>,
+    val sizes: List<ProductSizeModel>,
     val categoriesIDs: List<String>,
     val images: List<String>,
     val price: Int,
@@ -11,7 +18,6 @@ data class ProductUIModel(
     val priceAfterSale: Int? = null,
     val salePercentage: Int?,
     val saleType: String?,
-    val colors: List<String>,
     val currencySymbol: String = ""
 ) {
 
@@ -67,3 +73,19 @@ data class ProductUIModel(
         return true
     }
 }
+
+@Keep
+@Parcelize
+data class ProductColorUIModel(
+    var size: String? = null,
+    var stock: Int? = null,
+    var color: String? = null
+) : Parcelable
+
+
+@Keep
+@Parcelize
+data class ProductSizeUIModel(
+    var size: String? = null,
+    var stock: Int? = null
+) : Parcelable

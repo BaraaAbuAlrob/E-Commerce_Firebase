@@ -1,5 +1,6 @@
 package com.baraa.training.ecommerce.ui.home.fragments
 
+import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
@@ -21,8 +22,11 @@ import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
 import com.baraa.training.ecommerce.ui.home.model.SalesAdUIModel
 import com.baraa.training.ecommerce.ui.home.model.SpecialSectionUIModel
 import com.baraa.training.ecommerce.ui.home.viewmodel.HomeViewModel
-import com.baraa.training.ecommerce.ui.product.adapter.ProductAdapter
-import com.baraa.training.ecommerce.ui.product.adapter.ProductViewType
+import com.baraa.training.ecommerce.ui.products.ProductDetailsActivity
+import com.baraa.training.ecommerce.ui.products.ProductDetailsActivity.Companion.PRODUCT_UI_MODEL_EXTRA
+import com.baraa.training.ecommerce.ui.products.adapter.ProductAdapter
+import com.baraa.training.ecommerce.ui.products.adapter.ProductViewType
+import com.baraa.training.ecommerce.ui.products.model.ProductUIModel
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
 import com.baraa.training.ecommerce.utils.GridSpacingItemDecoration
 import com.baraa.training.ecommerce.utils.HorizontalSpaceItemDecoration
@@ -153,9 +157,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
-    private val flashSaleAdapter by lazy { ProductAdapter(viewType = ProductViewType.LIST) }
-    private val megaSaleAdapter by lazy { ProductAdapter(viewType = ProductViewType.LIST) }
-    private val allProductsAdapter by lazy { ProductAdapter() }
+    private val flashSaleAdapter by lazy {
+        ProductAdapter(viewType = ProductViewType.LIST) {
+            goToProductDetails(it)
+        }
+    }
+    private val megaSaleAdapter by lazy {
+        ProductAdapter(viewType = ProductViewType.LIST) {
+            goToProductDetails(it)
+        }
+    }
+    private val allProductsAdapter by lazy { ProductAdapter { goToProductDetails(it) } }
 
     private fun initViews() {
         binding.flashSaleProductsRv.apply {
@@ -214,11 +226,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         // add animation from top to bottom
-        binding.saleAdsViewPager.animate()
-            .translationY(0f)
-            .alpha(1f)
-            .setDuration(500)
-            .start()
+        binding.saleAdsViewPager.animate().translationY(0f).alpha(1f).setDuration(500).start()
     }
 
     private fun tickerFlow(period: Long) = flow {
@@ -260,6 +268,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 )
             )
         }
+    }
+
+    private fun goToProductDetails(product: ProductUIModel) {
+        requireActivity().startActivity(Intent(
+            requireActivity(), ProductDetailsActivity::class.java
+        ).apply {
+            putExtra(PRODUCT_UI_MODEL_EXTRA, product)
+        })
     }
 
     override fun onResume() {

@@ -1,4 +1,4 @@
-package com.baraa.training.ecommerce.ui.product.adapter
+package com.baraa.training.ecommerce.ui.products.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,6 +28,7 @@ class ProductAdapter (
         val product = getItem(position)
         Log.d("ProductAdapter", "onBindViewHolder: ${product.id}")
         holder.bind(viewType = viewType, product)
+        holder.itemView.setOnClickListener { onProductClick(product) }
     }
 
     class ProductViewHolder(private val binding: ProductItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -1,8 +1,6 @@
 package com.baraa.training.ecommerce.ui.home.viewmodel
 
 import android.util.Log
-import android.view.View
-import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

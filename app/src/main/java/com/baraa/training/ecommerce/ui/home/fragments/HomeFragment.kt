@@ -3,7 +3,6 @@ package com.baraa.training.ecommerce.ui.home.fragments
 import android.content.Intent
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +15,8 @@ import com.baraa.training.ecommerce.databinding.FragmentHomeBinding
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.common.views.CircleView
 import com.baraa.training.ecommerce.ui.common.views.loadImage
+import com.baraa.training.ecommerce.ui.common.views.sliderIndicatorsView
+import com.baraa.training.ecommerce.ui.common.views.updateIndicators
 import com.baraa.training.ecommerce.ui.home.adapter.CategoriesAdapter
 import com.baraa.training.ecommerce.ui.home.adapter.SalesAdAdapter
 import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
@@ -202,7 +203,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             return
         }
 
-        initializeIndicators(salesAds.size)
+        sliderIndicatorsView(
+            requireContext(),
+            binding.saleAdsViewPager,
+            binding.indicatorView,
+            indicators,
+            salesAds.size
+        )
         val salesAdapter = SalesAdAdapter(lifecycleScope, salesAds)
         binding.saleAdsViewPager.apply {
             adapter = salesAdapter
@@ -210,7 +217,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    updateIndicators(position)
+                    updateIndicators(requireContext(), indicators, position)
                 }
             })
         }
@@ -237,38 +244,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private var indicators = mutableListOf<CircleView>()
-
-    private fun initializeIndicators(count: Int) {
-        for (i in 0 until count) {
-            val circleView = CircleView(requireContext())
-            val params = LinearLayout.LayoutParams(
-                20, 20
-            )
-            params.setMargins(8, 0, 8, 0) // Margin between circles
-            circleView.setLayoutParams(params)
-            circleView.setRadius(10f) // Set radius
-            circleView.setColor(
-                if (i == 0) requireContext().getColor(R.color.primary_color) else requireContext().getColor(
-                    R.color.neutral_grey
-                )
-            ) // First indicator is red
-            circleView.setOnClickListener {
-                binding.saleAdsViewPager.setCurrentItem(i, true)
-            }
-            indicators.add(circleView)
-            binding.indicatorView.addView(circleView)
-        }
-    }
-
-    private fun updateIndicators(position: Int) {
-        for (i in 0 until indicators.size) {
-            indicators[i].setColor(
-                if (i == position) requireContext().getColor(R.color.primary_color) else requireContext().getColor(
-                    R.color.neutral_grey
-                )
-            )
-        }
-    }
 
     private fun goToProductDetails(product: ProductUIModel) {
         requireActivity().startActivity(Intent(

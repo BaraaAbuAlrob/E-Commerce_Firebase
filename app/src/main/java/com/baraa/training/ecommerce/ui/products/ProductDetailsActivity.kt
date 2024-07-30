@@ -33,7 +33,6 @@ class ProductDetailsActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_product_details)
 
         lifecycleScope.launch {

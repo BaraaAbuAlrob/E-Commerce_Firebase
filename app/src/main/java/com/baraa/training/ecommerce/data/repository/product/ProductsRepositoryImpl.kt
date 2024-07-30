@@ -46,7 +46,10 @@ class ProductsRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            var firstQuery = firestore.collection("products").orderBy("price")
+            Log.d(TAG, "ProductsRepositoryImpl - countryID: $countryID") // arrived correctly
+            var firstQuery = firestore.collection("products")
+//                .whereEqualTo("country_id", countryID)
+                .orderBy("price")
 
             if (lastDocument != null) {
                 firstQuery = firstQuery.startAfter(lastDocument)

@@ -36,11 +36,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val salesAdsRepository: SalesAdsRepository,
-    private val categoriesRepository: CategoriesRepository,
+    salesAdsRepository: SalesAdsRepository,
+    categoriesRepository: CategoriesRepository,
     private val productsRepository: ProductsRepository,
-    private val userPreferenceRepository: UserPreferenceRepository,
-    private val specialSectionsRepository: SpecialSectionsRepository
+    userPreferenceRepository: UserPreferenceRepository,
+    specialSectionsRepository: SpecialSectionsRepository
 ) : ViewModel() {
 
     val salesAdsState = salesAdsRepository.getSalesAds().stateIn(
@@ -68,7 +68,7 @@ class HomeViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val recommendedSectionDataState = specialSectionsRepository.recommendProductsSection().stateIn(
         viewModelScope + IO, started = SharingStarted.Eagerly, initialValue = null
-    ).mapLatest { it?.toSpecialSectionUIModel()}
+    ).mapLatest { it?.toSpecialSectionUIModel() }
 
     val isRecommendedSection = recommendedSectionDataState.map { it == null }.asLiveData()
 
@@ -99,17 +99,17 @@ class HomeViewModel @Inject constructor(
     private val _allProductsState: MutableStateFlow<List<ProductUIModel>> =
         MutableStateFlow(emptyList())
     val allProductsState = _allProductsState.asStateFlow()
-    val isLoadingAllProducts = MutableStateFlow(false)
-    val isFinishedLoadAllProducts = MutableStateFlow(false)
-    var lastDocumentSnapshot: DocumentSnapshot? = null
+    private val isLoadingAllProducts = MutableStateFlow(false)
+    private val isFinishedLoadAllProducts = MutableStateFlow(false)
+    private var lastDocumentSnapshot: DocumentSnapshot? = null
 
     fun getNextProducts() = viewModelScope.launch(IO) {
         if (isFinishedLoadAllProducts.value) return@launch
         if (isLoadingAllProducts.value) return@launch
         isLoadingAllProducts.emit(true)
 
-        val countryId = countryState.first().id ?: "0"
-        productsRepository.getAllProductsPaging(countryId, 3, lastDocumentSnapshot)
+        Log.d(TAG, "HomeViewModel - countryID: ${countryState.first().id}") // arrived correctly
+        productsRepository.getAllProductsPaging(countryState.first().id, 6, lastDocumentSnapshot)
             .collectLatest { resource ->
                 when (resource) {
                     is Resource.Success -> {

@@ -1,16 +1,10 @@
 package com.baraa.training.ecommerce.ui.common.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import com.baraa.training.ecommerce.data.datasource.datastore.AppPreferencesDataSource
 import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepository
-import com.baraa.training.ecommerce.data.repository.auth.FirebaseAuthRepositoryImpl
-import com.baraa.training.ecommerce.data.repository.common.AppDataStoreRepositoryImpl
 import com.baraa.training.ecommerce.data.repository.common.AppPreferenceRepository
 import com.baraa.training.ecommerce.data.repository.user.UserFirestoreRepository
 import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepository
@@ -19,8 +13,7 @@ import com.baraa.training.ecommerce.domain.models.toUserDetailsPreferences
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils
 import com.baraa.training.ecommerce.utils.CrashlyticsUtils.LISTEN_TO_USER_DETAILS
 import com.baraa.training.ecommerce.utils.UserDetailsException
-import com.baraa.training.ecommerce.data.repository.user.UserFirestoreRepositoryImpl
-import com.baraa.training.ecommerce.data.repository.user.UserPreferenceRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,8 +23,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserViewModel(
+@HiltViewModel
+class UserViewModel @Inject constructor(
     private val appPreferencesRepository: AppPreferenceRepository,
     private val userPreferencesRepository: UserPreferenceRepository,
     private val userFirestoreRepository: UserFirestoreRepository,
@@ -40,7 +35,7 @@ class UserViewModel(
 
     private val logoutState = MutableSharedFlow<Resource<Unit>>()
 
-    // load user data in state flow inside view model  scope
+    // load user data in state flow inside view models  scope
     val userDetailsState = getUserDetails().stateIn(
         viewModelScope, started = SharingStarted.Eagerly, initialValue = null
     )
@@ -71,7 +66,7 @@ class UserViewModel(
                 is Resource.Success -> {
 
                     resource.data?.let {
-                        userPreferencesRepository.updateUserDetails(it.toUserDetailsPreferences())
+//                        userPreferencesRepository.updateUserDetails(it.toUserDetailsPreferences()
                     }
                 }
 
@@ -99,27 +94,5 @@ class UserViewModel(
     override fun onCleared() {
         super.onCleared()
         Log.d(TAG, "onCleared: UserViewModel cleared")
-    }
-}
-
-class UserViewModelFactory(
-    private val context: Context,
-) : ViewModelProvider.Factory {
-    private val appPreferencesRepository =
-        AppDataStoreRepositoryImpl(AppPreferencesDataSource(context))
-    private val userPreferencesRepository = UserPreferenceRepositoryImpl(context)
-    private val userFirestoreRepository = UserFirestoreRepositoryImpl()
-    private val firebaseAuthRepository = FirebaseAuthRepositoryImpl()
-
-    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-        if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST") return UserViewModel(
-                appPreferencesRepository,
-                userPreferencesRepository,
-                userFirestoreRepository,
-                firebaseAuthRepository
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

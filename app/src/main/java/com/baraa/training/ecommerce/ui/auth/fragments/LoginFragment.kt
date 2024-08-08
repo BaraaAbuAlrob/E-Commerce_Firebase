@@ -18,7 +18,6 @@ import com.baraa.training.ecommerce.data.models.Resource
 import com.baraa.training.ecommerce.databinding.FragmentLoginBinding
 import com.baraa.training.ecommerce.ui.auth.getGoogleRequestIntent
 import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModel
-import com.baraa.training.ecommerce.ui.auth.viewmodel.LoginViewModelFactory
 import com.baraa.training.ecommerce.ui.common.fragments.BaseFragment
 import com.baraa.training.ecommerce.ui.home.MainActivity
 import com.baraa.training.ecommerce.ui.showSnakeBarError
@@ -35,15 +34,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
     private val callbackManager: CallbackManager by lazy { CallbackManager.Factory.create() }
     private val loginManager: LoginManager by lazy { LoginManager.getInstance() }
 
-    override val viewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory(contextValue = requireContext())
-    }
+    override val viewModel: LoginViewModel by viewModels ()
 
     override fun getLayoutResId(): Int = R.layout.fragment_login
 
@@ -51,6 +50,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         changeEditTextStrokeAndStartDrawableColors()
         initListeners()
         initViewModel()
+
+        val countryFragment = CountriesFragment()
+        countryFragment.isCancelable = false
+        countryFragment.show(parentFragmentManager, "country-fragment")
     }
 
     private fun initViewModel() {

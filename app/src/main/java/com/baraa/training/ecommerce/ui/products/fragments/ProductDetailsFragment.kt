@@ -1,5 +1,10 @@
 package com.baraa.training.ecommerce.ui.products.fragments
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -12,6 +17,7 @@ import com.baraa.training.ecommerce.ui.common.views.updateIndicators
 import com.baraa.training.ecommerce.ui.products.adapter.ProductImagesAdapter
 import com.baraa.training.ecommerce.ui.products.model.ProductUIModel
 import com.baraa.training.ecommerce.ui.products.viewmodel.ProductDetailsViewModel
+import com.baraa.training.ecommerce.ui.theme.EcommerceTheme
 import com.baraa.training.ecommerce.utils.DepthPageTransformer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -40,6 +46,24 @@ class ProductDetailsFragment :
     private fun initView(it: ProductUIModel) {
         it.name.let { binding.titleTv.text = it }
         initImagesView(it.images)
+        initComposViews()
+    }
+
+    private fun initComposViews() {
+        binding.composeView.setContent {
+            EcommerceTheme {
+                Column {
+                    val product = viewModel.productDetailsState.collectAsState().value
+                    Row {
+                        Text(
+                            text = product.description, style = MaterialTheme.typography.titleLarge // or style = ECommerceTypography.titleLarge
+                        )
+                    }
+
+                    Text(text = "compose test recomposition")
+                }
+            }
+        }
     }
 
     private var indicators = mutableListOf<CircleView>()

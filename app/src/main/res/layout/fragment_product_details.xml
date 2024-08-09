@@ -43,19 +43,19 @@
 
                         <ImageView
                             android:id="@+id/back_iv"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:padding="10dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginBottom="3dp"
+                            android:padding="4dp"
                             android:src="@drawable/ic_back_arrow"
                             tools:ignore="ContentDescription" />
-
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/title_tv"
                             style="@style/TitleTextStyle"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="16sp"
+                            android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:singleLine="true"
@@ -110,6 +110,11 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:orientation="horizontal" />
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/compose_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

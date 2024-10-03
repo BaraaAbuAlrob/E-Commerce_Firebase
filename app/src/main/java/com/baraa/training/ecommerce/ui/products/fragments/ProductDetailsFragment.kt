@@ -1,10 +1,17 @@
 package com.baraa.training.ecommerce.ui.products.fragments
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -56,11 +63,21 @@ class ProductDetailsFragment :
                     val product = viewModel.productDetailsState.collectAsState().value
                     Row {
                         Text(
-                            text = product.description, style = MaterialTheme.typography.titleLarge // or style = ECommerceTypography.titleLarge
+                            text = product.description,
+                            style = MaterialTheme.typography.titleLarge // or style = ECommerceTypography.titleLarge
+
                         )
                     }
 
-                    Text(text = "compose test recomposition")
+                    var count by remember {
+                        mutableIntStateOf(0)
+                    }
+
+                    Text(text = "compose test recomposition, count: $count",
+                        modifier = Modifier.clickable {
+                            count++
+                        }
+                    )
                 }
             }
         }

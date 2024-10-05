@@ -80,9 +80,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.activity:activity-ktx:1.9.2")
-
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
 
     // Datastore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -125,7 +124,6 @@ dependencies {
     // Facebook auth dependency
     implementation("com.facebook.android:facebook-android-sdk:16.0.0")
 
-
     // third party libraries
     implementation("com.github.pwittchen:reactivenetwork-rx2:3.0.8")
 
@@ -160,14 +158,18 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation("androidx.fragment:fragment-ktx:1.8.4")
-    implementation("androidx.activity:activity-ktx:1.9.2")
+
+    // Datastore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Protobuf
     implementation("com.google.protobuf:protobuf-kotlin-lite:4.26.0")
 
     // Material Design
+    implementation("com.google.android.material:material:1.12.0")
     api("com.google.android.material:material:1.12.0")
 
+    // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")

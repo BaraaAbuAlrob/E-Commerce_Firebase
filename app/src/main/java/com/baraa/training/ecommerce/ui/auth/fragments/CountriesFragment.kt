@@ -31,7 +31,11 @@ class CountriesFragment : BaseBottomSheetFragment<FragmentCountriesBinding, Coun
 
         lifecycleScope.launch {
             viewModel.countriesUIModelState.collectLatest {
-                if(it.isEmpty()) return@collectLatest
+                if (it.isEmpty()) {
+                    binding.progressBar.visibility = View.GONE
+                    dismiss()
+                    return@collectLatest
+                }
                 binding.progressBar.visibility = View.GONE
                 binding.countriesLayout.visibility = View.VISIBLE
 

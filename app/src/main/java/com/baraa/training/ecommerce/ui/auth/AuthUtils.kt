@@ -9,12 +9,15 @@ import com.baraa.training.ecommerce.BuildConfig
 
 fun getGoogleRequestIntent(context: Activity): Intent {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(BuildConfig.clientServerId).requestEmail().requestProfile()
-        .requestServerAuthCode(BuildConfig.clientServerId).build()
+        .requestIdToken(BuildConfig.clientServerId)
+        .requestEmail()
+        .requestProfile()
+        .build()
 
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
     googleSignInClient.signOut()
     return googleSignInClient.signInIntent
+}
 
     // End getGoogleRequestIntent() method
 
@@ -56,4 +59,3 @@ fun getGoogleRequestIntent(context: Activity): Intent {
 
     then Sync and rebuild the project to create (automatically) the BuildConfig.java class
      */
-}

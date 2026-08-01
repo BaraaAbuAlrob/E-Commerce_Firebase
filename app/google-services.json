@@ -14,16 +14,12 @@
       },
       "oauth_client": [
         {
-          "client_id": "364834184261-5lraupkk2eatm6ogrfaefkr1hkm4ennn.apps.googleusercontent.com",
+          "client_id": "364834184261-uoc1drgk2ptmpnu866ao53rtsocga02h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.baraa.training.ecommerce",
-            "certificate_hash": "e7142808b8b97533fcf21bc7897350b411762396"
+            "certificate_hash": "19a80e85d45b1a05a707d4130956eb1aa1ac225c"
           }
-        },
-        {
-          "client_id": "364834184261-u5j7hkvu3kc54j32fen5gbdclcrdq8ep.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -33,12 +29,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

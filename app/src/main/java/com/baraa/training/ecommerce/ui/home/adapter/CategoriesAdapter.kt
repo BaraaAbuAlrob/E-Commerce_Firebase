@@ -2,25 +2,26 @@ package com.baraa.training.ecommerce.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.baraa.training.ecommerce.databinding.CategoryItemBinding
-import com.baraa.training.ecommerce.ui.common.views.getGlideCircleLoading
 import com.baraa.training.ecommerce.ui.home.model.CategoryUIModel
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterInside
 
 class CategoriesAdapter(
-    private val categories: List<CategoryUIModel>
+    private var categories: List<CategoryUIModel> = emptyList(),
+    private val onCategoryClick: (CategoryUIModel) -> Unit = {}
 ) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
+
+    fun submitList(newList: List<CategoryUIModel>) {
+        categories = newList
+        notifyDataSetChanged()
+    }
 
     inner class CategoryViewHolder(private val binding: CategoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(category: CategoryUIModel) {
             binding.category = category
+            binding.root.setOnClickListener { onCategoryClick(category) }
             binding.executePendingBindings()
         }
     }
@@ -36,5 +37,4 @@ class CategoriesAdapter(
     }
 
     override fun getItemCount(): Int = categories.size
-
 }

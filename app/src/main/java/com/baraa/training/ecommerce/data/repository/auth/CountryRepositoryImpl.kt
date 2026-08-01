@@ -12,8 +12,13 @@ class CountryRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : CountryRepository {
     override fun getCountries(): Flow<List<CountryModel>> = flow {
-        val countries = firestore.collection("countries").get().await().toObjects(CountryModel::class.java)
-        Log.d("CountryRepositoryImpl", "getCountries: $countries")
-        emit(countries)
+        try {
+            val countries = firestore.collection("countries").get().await().toObjects(CountryModel::class.java)
+            Log.d("CountryRepositoryImpl", "getCountries count: ${countries.size}")
+            emit(countries)
+        } catch (e: Exception) {
+            Log.e("CountryRepositoryImpl", "Error fetching countries", e)
+            emit(emptyList())
+        }
     }
 }

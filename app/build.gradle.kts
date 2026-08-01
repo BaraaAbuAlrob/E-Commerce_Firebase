@@ -36,7 +36,7 @@ android {
             it.buildConfigField(
                 "String",
                 "clientServerId",
-                "\"364834184261-5lvjvf7pt82i66bcflps3j8amjitmnoi.apps.googleusercontent.com\""
+                "\"364834184261-u5j7hkvu3kc54j32fen5gbdclcrdq8ep.apps.googleusercontent.com\""
             )
 
             it.resValue(
@@ -75,6 +75,40 @@ android {
         }
     }
 }
+dependencies {
+    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.2")
+    implementation("androidx.activity:activity-ktx:1.13.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+
+    // Datastore
+
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.2.0")
+
+    // compose
+    val composeBom = platform("androidx.compose:compose-bom:2024.10.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3-window-size-class")
+    implementation("androidx.activity:activity-compose:1.13.0")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
+    implementation("androidx.compose.runtime:runtime-livedata")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
+    implementation("com.google.accompanist:accompanist-webview:0.36.0")
+    implementation("io.coil-kt:coil:2.7.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("org.jetbrains.compose:compose-gradle-plugin:1.11.1")
+    implementation("androidx.fragment:fragment-compose:1.8.9")
 
     // Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
@@ -127,8 +161,8 @@ android {
     implementation("androidx.datastore:datastore-preferences:1.2.1")
 
     // Protobuf
-    implementation("com.google.protobuf:protobuf-kotlin-lite:4.35.1")
-    implementation("com.google.protobuf:protobuf-javalite:4.35.1")
+    implementation("com.google.protobuf:protobuf-javalite:3.25.5")
+    implementation("com.google.protobuf:protobuf-kotlin-lite:3.25.5")
 
     // Material Design
     implementation("com.google.android.material:material:1.14.0")
@@ -143,7 +177,7 @@ android {
 // Setup protobuf configuration, generating lite Java and Kotlin classes
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.26.0"
+        artifact = "com.google.protobuf:protoc:3.25.5"
     }
     generateProtoTasks {
         all().forEach { task ->

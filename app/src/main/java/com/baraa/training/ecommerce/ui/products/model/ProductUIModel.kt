@@ -11,16 +11,16 @@ data class ProductUIModel(
     val id: String,
     val name: String,
     val description: String,
-    val colors: List<ProductColorUIModel>,
-    val sizes: List<ProductSizeModel>,
-    val categoriesIDs: List<String>,
-    val images: List<String>,
-    val price: Int,
-    val rate: Float,
+    val colors: List<ProductColorUIModel> = emptyList(),
+    val sizes: List<ProductSizeModel> = emptyList(),
+    val categoriesIDs: List<String> = emptyList(),
+    val images: List<String> = emptyList(),
+    val price: Int = 0,
+    val rate: Float = 0f,
     val priceAfterSale: Int? = null,
-    val salePercentage: Int?,
-    val saleType: String?,
-    val currencySymbol: String = ""
+    val salePercentage: Int? = null,
+    val saleType: String? = null,
+    val currencySymbol: String = "$"
 ) : Parcelable {
 
     fun getFormattedPrice(): String {
@@ -34,7 +34,7 @@ data class ProductUIModel(
     }
 
     fun getFormattedSale(): String {
-        return "$salePercentage% Off"
+        return "${salePercentage ?: 0}% Off"
     }
 
     fun getFirstImage(): String {

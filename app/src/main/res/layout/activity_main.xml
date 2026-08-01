@@ -33,7 +33,7 @@
         app:itemPaddingTop="10dp"
         app:itemIconSize="18dp"
         app:itemTextColor="@drawable/home_nav_items_color"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="selected"
         app:menu="@menu/home_nav_menu" />
 
 </LinearLayout>

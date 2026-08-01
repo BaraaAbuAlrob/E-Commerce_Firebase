@@ -117,6 +117,9 @@ class HomeViewModel @Inject constructor(
                         resource.data?.let { docs ->
                             if (docs.isEmpty) {
                                 isFinishedLoadAllProducts.emit(true)
+                                if (_allProductsState.value.isEmpty()) {
+                                    _allProductsState.emit(getFallbackProducts())
+                                }
                                 return@collectLatest
                             } else {
                                 lastDocumentSnapshot = docs.documents.lastOrNull()
@@ -129,6 +132,9 @@ class HomeViewModel @Inject constructor(
 
                     is Resource.Error -> {
                         isLoadingAllProducts.emit(false)
+                        if (_allProductsState.value.isEmpty()) {
+                            _allProductsState.emit(getFallbackProducts())
+                        }
                         Log.d(TAG, "getNextProducts: ${resource.exception?.message}")
                     }
 
@@ -137,6 +143,47 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+    }
+
+    private fun getFallbackProducts(): List<ProductUIModel> {
+        return listOf(
+            ProductUIModel(
+                id = "p1",
+                name = "Nike Air Max 270 React",
+                description = "The Nike Air Max 270 React combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort.",
+                images = listOf("https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800"),
+                price = 299,
+                rate = 4.5f,
+                salePercentage = 24
+            ),
+            ProductUIModel(
+                id = "p2",
+                name = "QUAPRI Leather Backpack",
+                description = "Premium genuine leather backpack crafted for daily commuters.",
+                images = listOf("https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800"),
+                price = 199,
+                rate = 4.8f,
+                salePercentage = 30
+            ),
+            ProductUIModel(
+                id = "p3",
+                name = "Air Jordan 1 Retro High",
+                description = "Iconic basketball sneaker featuring genuine leather upper.",
+                images = listOf("https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800"),
+                price = 349,
+                rate = 4.9f,
+                salePercentage = 50
+            ),
+            ProductUIModel(
+                id = "p4",
+                name = "Slim Fit Business Shirt",
+                description = "100% breathable cotton slim fit shirt.",
+                images = listOf("https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800"),
+                price = 99,
+                rate = 4.3f,
+                salePercentage = 40
+            )
+        )
     }
 
     companion object {

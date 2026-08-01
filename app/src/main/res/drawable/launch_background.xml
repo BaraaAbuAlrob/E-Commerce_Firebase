@@ -6,14 +6,14 @@
     <item
         android:height="100dp"
         android:width="100dp"
-        android:drawable="@drawable/ic_splash_screen"
+        android:drawable="@drawable/logo"
         android:gravity="center" />
 
 <!--The Brand (name of app owner), like facebook write from meta...-->
     <item
         android:height="80dp"
         android:width="200dp"
-        android:bottom="60dp"
+        android:bottom="80dp"
         android:drawable="@drawable/brand_logo"
         android:gravity="center|bottom" />
 </layer-list>

@@ -81,4 +81,10 @@ abstract class RepositoryModule {
     abstract fun provideSpecialSectionsRepositoryImpl(
         specialSectionsRepository: SpecialSectionsRepositoryImpl
     ): SpecialSectionsRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideCartRepository(
+        cartRepositoryImpl: com.baraa.training.ecommerce.data.repository.cart.CartRepositoryImpl
+    ): com.baraa.training.ecommerce.data.repository.cart.CartRepository
 }
